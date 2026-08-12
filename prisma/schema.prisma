@@ -1,0 +1,123 @@
+// Prisma Schema for Adam Radi Portfolio — MySQL
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ── Admin User ───────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String   @unique
+  password  String   // bcrypt hashed
+  name      String
+  role      String   @default("ADMIN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// ── Project ──────────────────────────────────────────────────────────────────
+// MySQL has no native array type — we use Json for arrays of strings
+
+model Project {
+  id             String   @id @default(cuid())
+  title          String   @db.VarChar(255)
+  slug           String   @unique @db.VarChar(255)
+  description    String   @db.Text
+  overview       String   @db.Text
+  problem        String   @db.Text
+  solution       String   @db.Text
+  technologies   Json     // string[]
+  features       Json     // string[]
+  challenges     Json     // string[]
+  lessonsLearned Json     // string[]
+  image          String   @db.VarChar(500)
+  githubUrl      String?  @db.VarChar(500)
+  liveUrl        String?  @db.VarChar(500)
+  featured       Boolean  @default(false)
+  published      Boolean  @default(true)
+  order          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("projects")
+}
+
+// ── Experience ───────────────────────────────────────────────────────────────
+
+model Experience {
+  id           String   @id @default(cuid())
+  company      String   @db.VarChar(255)
+  role         String   @db.VarChar(255)
+  location     String   @db.VarChar(255)
+  startDate    String   @db.VarChar(20)  // "YYYY-MM"
+  endDate      String?  @db.VarChar(20)  // "YYYY-MM" or null
+  description  Json     // string[]
+  technologies Json     // string[]
+  current      Boolean  @default(false)
+  companyLogo  String?  @db.VarChar(500) // logo image path/url
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("experiences")
+}
+
+// ── Skill ────────────────────────────────────────────────────────────────────
+
+model Skill {
+  id                String   @id @default(cuid())
+  name              String   @db.VarChar(100)
+  category          String   @db.VarChar(50)  // frontend | backend | database | devops | tools | dental
+  icon              String?  @db.VarChar(100)
+  level             String   @default("intermediate") @db.VarChar(50) // beginner | intermediate | advanced | expert
+  description       String?  @db.Text
+  yearsOfExperience Int?     @default(0)
+  order             Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("skills")
+}
+
+// ── Certification ─────────────────────────────────────────────────────────────
+
+model Certification {
+  id             String   @id @default(cuid())
+  title          String   @db.VarChar(255)
+  issuer         String   @db.VarChar(255)
+  date           String   @db.VarChar(20) // "YYYY-MM"
+  expirationDate String?  @db.VarChar(20) // "YYYY-MM" or null
+  credentialId   String?  @db.VarChar(255)
+  credentialUrl  String?  @db.VarChar(500)
+  description    String?  @db.Text
+  image          String?  @db.VarChar(500)
+  order          Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("certifications")
+}
+
+// ── Message (Contact Form) ────────────────────────────────────────────────────
+
+model Message {
+  id        String   @id @default(cuid())
+  name      String   @db.VarChar(255)
+  email     String   @db.VarChar(255)
+  subject   String   @db.VarChar(500)
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("messages")
+}
