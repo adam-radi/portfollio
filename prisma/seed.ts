@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import * as bcrypt from "bcryptjs";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -41,7 +41,7 @@ async function main() {
         "Farmers in Morocco face challenges reaching buyers beyond their immediate region, while buyers have no reliable digital channel to source fresh agricultural products.",
       solution:
         "AgriFlow provides a structured marketplace with role-based access, real-time inventory management, a secure REST API powered by Laravel Sanctum, and a React/Redux frontend.",
-      technologies: JSON.stringify([
+      technologies: [
         "Laravel",
         "React",
         "TypeScript",
@@ -50,24 +50,24 @@ async function main() {
         "Redux Toolkit",
         "REST API",
         "Tailwind CSS",
-      ]),
-      features: JSON.stringify([
+      ],
+      features: [
         "Role-based authentication (farmer, buyer, admin) via Laravel Sanctum",
         "Product listing with categories, stock, and pricing management",
         "Order management dashboard for both buyers and farmers",
         "Shopping cart with checkout flow",
         "Admin panel for platform management",
-      ]),
-      challenges: JSON.stringify([
+      ],
+      challenges: [
         "Designing a clean role-based permission system across Laravel + React",
         "Managing real-time inventory synchronization",
         "Keeping the REST API surface minimal while supporting complex business logic",
-      ]),
-      lessonsLearned: JSON.stringify([
+      ],
+      lessonsLearned: [
         "Feature-based architecture in Laravel scales far better than layer-based",
         "Redux Toolkit significantly simplifies async state management",
         "API Resources are essential for predictable frontend/backend contracts",
-      ]),
+      ],
       image: "/images/projects/agriflow.png",
       githubUrl: undefined,
       liveUrl: undefined,
@@ -91,15 +91,15 @@ async function main() {
         "Traditional car rental agencies rely on manual processes and phone calls, making it difficult to scale, track vehicle availability in real-time, or offer a professional digital experience.",
       solution:
         "A web platform with distinct interfaces for visitors, customers, employees, and managers — centralizing bookings, car tracking, agency management, pricing, and multilingual support.",
-      technologies: JSON.stringify([
+      technologies: [
         "Next.js",
         "React",
         "TypeScript",
         "Tailwind CSS",
         "Prisma",
         "MySQL",
-      ]),
-      features: JSON.stringify([
+      ],
+      features: [
         "Multi-role system: visitor, customer, employee, manager",
         "Branch and agency management",
         "Real-time car availability and location tracking",
@@ -107,19 +107,19 @@ async function main() {
         "Multilingual support: Arabic, French, English",
         "Booking management with pickup location selection",
         "Notification system for reservations and returns",
-      ]),
-      challenges: JSON.stringify([
+      ],
+      challenges: [
         "Designing a clean multi-role permission system",
         "Managing multilingual content across Arabic (RTL), French, and English",
         "Handling concurrent booking conflicts",
-      ]),
-      lessonsLearned: JSON.stringify([
+      ],
+      lessonsLearned: [
         "Role-based access control requires careful planning at the schema level",
         "Internationalization with RTL support needs early architectural decisions",
         "Real-time status updates improve user trust significantly",
-      ]),
+      ],
       image: "/images/projects/ms-car-rent.png",
-      githubUrl: undefined,
+      githubUrl: "https://github.com/adam-radi/M.S-car-rent",
       liveUrl: "https://m-s-car-rent1.vercel.app/",
       featured: true,
       order: 1,
@@ -140,14 +140,14 @@ async function main() {
       startDate: "2023-01",
       endDate: null,
       current: true,
-      description: JSON.stringify([
+      description: [
         "Assure le support informatique complet de la clinique : installation, configuration et maintenance des postes de travail, imprimantes et équipements réseau.",
         "Conception et modélisation de prothèses dentaires numériques (couronnes, bridges, inlays/onlays) à l'aide du logiciel Exocad sur stations CAD/CAM.",
         "Collaboration étroite avec les prothésistes pour garantir la précision et la qualité des restaurations dentaires numériques.",
         "Maintenance préventive et corrective des équipements dentaires (scanner intra-oral, fraiseuse, four de céramique).",
         "Gestion des sauvegardes, sécurité des données patients et infrastructure réseau interne.",
-      ]),
-      technologies: JSON.stringify([
+      ],
+      technologies: [
         "Exocad",
         "CAD/CAM",
         "3D Scanner",
@@ -155,7 +155,7 @@ async function main() {
         "IT Support",
         "Networking",
         "Windows Server",
-      ]),
+      ],
       order: 0,
     },
   });

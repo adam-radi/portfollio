@@ -15,4 +15,5 @@ export interface Project {
   liveUrl?: string;
   featured: boolean;
   published?: boolean;
+  order?: number;
 }

@@ -12,12 +12,12 @@ interface SkillsProps {
 }
 
 const categories: { id: SkillCategory; label: string; emoji: string }[] = [
-  { id: "frontend", label: "Frontend",             emoji: "🖥️" },
-  { id: "backend",  label: "Backend",              emoji: "⚙️" },
-  { id: "database", label: "Database",             emoji: "🗄️" },
-  { id: "devops",   label: "DevOps",               emoji: "🚀" },
-  { id: "tools",    label: "Tools",                emoji: "🛠️" },
-  { id: "dental",   label: "Dental Technologies",  emoji: "🦷" },
+  { id: "frontend", label: "Frontend", emoji: "🖥️" },
+  { id: "backend", label: "Backend", emoji: "⚙️" },
+  { id: "database", label: "Database", emoji: "🗄️" },
+  { id: "devops", label: "DevOps", emoji: "🚀" },
+  { id: "tools", label: "Tools", emoji: "🛠️" },
+  { id: "dental", label: "Dental Technologies", emoji: "🦷" },
 ];
 
 const containerVariants: Variants = {

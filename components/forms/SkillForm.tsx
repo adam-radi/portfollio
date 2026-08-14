@@ -20,7 +20,14 @@ export function SkillForm({ mode, initialData }: SkillFormProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    name: string;
+    category: Skill["category"];
+    level: Skill["level"];
+    icon: string;
+    description: string;
+    yearsOfExperience: string;
+  }>({
     name: initialData?.name || "",
     category: initialData?.category || "frontend",
     level: initialData?.level || "intermediate",
@@ -37,6 +44,8 @@ export function SkillForm({ mode, initialData }: SkillFormProps) {
     try {
       const payload = {
         ...formData,
+        category: formData.category || "frontend",
+        level: formData.level || "intermediate",
         yearsOfExperience: Number(formData.yearsOfExperience || 0),
       };
 
@@ -113,7 +122,7 @@ export function SkillForm({ mode, initialData }: SkillFormProps) {
             <select
               id="skill-category"
               value={formData.category}
-              onChange={(e) => setFormData((p) => ({ ...p, category: e.target.value }))}
+              onChange={(e) => setFormData((p) => ({ ...p, category: e.target.value as Skill["category"] }))}
               className="w-full rounded-xl border border-zinc-800 bg-zinc-950/80 px-4 py-2.5 text-sm text-zinc-100 focus:border-[#FF6B2C] focus:outline-none focus:ring-1 focus:ring-[#FF6B2C]"
             >
               <option value="frontend">Frontend</option>
@@ -129,7 +138,7 @@ export function SkillForm({ mode, initialData }: SkillFormProps) {
             <select
               id="skill-level"
               value={formData.level}
-              onChange={(e) => setFormData((p) => ({ ...p, level: e.target.value }))}
+              onChange={(e) => setFormData((p) => ({ ...p, level: e.target.value as Skill["level"] }))}
               className="w-full rounded-xl border border-zinc-800 bg-zinc-950/80 px-4 py-2.5 text-sm text-zinc-100 focus:border-[#FF6B2C] focus:outline-none focus:ring-1 focus:ring-[#FF6B2C]"
             >
               <option value="beginner">Beginner</option>

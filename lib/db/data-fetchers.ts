@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { projects as staticProjects } from "@/data/projects";
 import { experiences as staticExperiences } from "@/data/experience";
 import { skills as staticSkills } from "@/data/skills";
+import { promises as fs } from "fs";
+import path from "path";
 import { certifications as staticCertifications } from "@/data/certifications";
 import { Project } from "@/types/project";
 import { Experience } from "@/types/experience";
@@ -11,40 +13,78 @@ import { Message } from "@/types/message";
 
 // ── Projects Fetcher ────────────────────────────────────────
 
+function asStringArray(value: unknown): string[] {
+  if (Array.isArray(value)) return value.map((v) => String(v));
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      if (Array.isArray(parsed)) return parsed.map((v) => String(v));
+    } catch {}
+  }
+  return [];
+}
+
+async function readLocalProjects(): Promise<Project[]> {
+  const localPath = path.join(process.cwd(), "data", "localProjects.json");
+  try {
+    const raw = await fs.readFile(localPath, "utf-8");
+    return JSON.parse(raw) as Project[];
+  } catch {
+    try {
+      await fs.mkdir(path.dirname(localPath), { recursive: true });
+      await fs.writeFile(localPath, JSON.stringify(staticProjects, null, 2), "utf-8");
+    } catch {}
+    return staticProjects;
+  }
+}
+
 export async function getProjects(): Promise<Project[]> {
   try {
-    if (!process.env.DATABASE_URL || !prisma?.project) return staticProjects;
+    if (!process.env.DATABASE_URL || !prisma?.project) return await readLocalProjects();
     const dbProjects = await prisma.project.findMany({
       orderBy: { order: "asc" },
     });
-    if (dbProjects.length === 0) return staticProjects;
+    if (dbProjects.length === 0) return await readLocalProjects();
     return dbProjects.map((p: any) => ({
       ...p,
       githubUrl: p.githubUrl || undefined,
       liveUrl: p.liveUrl || undefined,
       published: typeof p.published === "boolean" ? p.published : true,
+      features: asStringArray(p.features),
+      technologies: asStringArray(p.technologies),
+      challenges: asStringArray(p.challenges),
+      lessonsLearned: asStringArray(p.lessonsLearned),
     }));
   } catch (error) {
-    return staticProjects;
+    return await readLocalProjects();
   }
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
   try {
     if (!process.env.DATABASE_URL || !prisma?.project) {
-      return staticProjects.find((p) => p.slug === slug) || null;
+      const localProjects = await readLocalProjects();
+      return localProjects.find((p) => p.slug === slug) || null;
     }
     const p = await prisma.project.findUnique({
       where: { slug },
     });
-    if (!p) return staticProjects.find((proj) => proj.slug === slug) || null;
+    if (!p) {
+      const localProjects = await readLocalProjects();
+      return localProjects.find((proj) => proj.slug === slug) || null;
+    }
     return {
       ...p,
       githubUrl: p.githubUrl || undefined,
       liveUrl: p.liveUrl || undefined,
+      features: asStringArray(p.features),
+      technologies: asStringArray(p.technologies),
+      challenges: asStringArray(p.challenges),
+      lessonsLearned: asStringArray(p.lessonsLearned),
     };
   } catch (error) {
-    return staticProjects.find((p) => p.slug === slug) || null;
+    const localProjects = await readLocalProjects();
+    return localProjects.find((p) => p.slug === slug) || null;
   }
 }
 
@@ -57,7 +97,11 @@ export async function getExperiences(): Promise<Experience[]> {
       orderBy: { order: "asc" },
     });
     if (dbExperiences.length === 0) return staticExperiences;
-    return dbExperiences;
+    return dbExperiences.map((e: any) => ({
+      ...e,
+      description: asStringArray(e.description),
+      technologies: asStringArray(e.technologies),
+    }));
   } catch (error) {
     return staticExperiences;
   }
@@ -66,15 +110,30 @@ export async function getExperiences(): Promise<Experience[]> {
 // ── Skills Fetcher ──────────────────────────────────────────
 
 export async function getSkills(): Promise<Skill[]> {
+  async function readLocalSkills(): Promise<Skill[]> {
+    const localPath = path.join(process.cwd(), "data", "localSkills.json");
+    try {
+      const raw = await fs.readFile(localPath, "utf-8");
+      return JSON.parse(raw) as Skill[];
+    } catch (err) {
+      // create file from staticSkills if missing
+      try {
+        await fs.mkdir(path.dirname(localPath), { recursive: true });
+        await fs.writeFile(localPath, JSON.stringify(staticSkills, null, 2), "utf-8");
+      } catch { }
+      return staticSkills;
+    }
+  }
+
   try {
-    if (!process.env.DATABASE_URL || !prisma?.skill) return staticSkills;
+    if (!process.env.DATABASE_URL || !prisma?.skill) return await readLocalSkills();
     const dbSkills = await prisma.skill.findMany({
       orderBy: { order: "asc" },
     });
-    if (dbSkills.length === 0) return staticSkills;
+    if (dbSkills.length === 0) return await readLocalSkills();
     return dbSkills as Skill[];
   } catch (error) {
-    return staticSkills;
+    return await readLocalSkills();
   }
 }
 

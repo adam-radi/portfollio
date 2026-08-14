@@ -22,7 +22,7 @@ const lineVariants: Variants = {
   hidden: { scaleY: 0, originY: 0 },
   visible: {
     scaleY: 1,
-    transition: { duration: 0.8, ease: "easeOut", delay: 0.2 },
+    transition: { duration: 0.8, ease: "easeOut" as const, delay: 0.2 },
   },
 };
 
@@ -35,7 +35,7 @@ export default function Experience({ initialExperiences = [] }: ExperienceProps)
   const shouldReduceMotion = useReducedMotion();
   const headingVariants = shouldReduceMotion ? reducedVariants : {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
   };
 
   return (
@@ -89,7 +89,7 @@ export default function Experience({ initialExperiences = [] }: ExperienceProps)
           >
             {initialExperiences.map((exp, index) => (
               <div key={exp.id} className="relative grid grid-cols-1 lg:grid-cols-[180px_48px_1fr] gap-0 items-start">
-                
+
                 {/* Desktop Date Column */}
                 <motion.div
                   variants={headingVariants}

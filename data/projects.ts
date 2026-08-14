@@ -87,7 +87,7 @@ export const projects: Project[] = [
       "Proper database indexing is critical for filtering queries at scale",
     ],
     image: "/images/projects/ms-car-rent.png",
-    githubUrl: undefined,
+    githubUrl: "https://github.com/adam-radi/M.S-car-rent",
     liveUrl: undefined,
     featured: true,
   },

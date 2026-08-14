@@ -26,8 +26,8 @@ export async function createExperienceAction(data: {
       startDate: data.startDate,
       endDate: data.current ? null : data.endDate || null,
       current: data.current,
-      description: JSON.stringify(data.description),
-      technologies: JSON.stringify(data.technologies),
+      description: data.description,
+      technologies: data.technologies,
       companyLogo: data.companyLogo || null,
     },
   });
@@ -63,8 +63,8 @@ export async function updateExperienceAction(
       startDate: data.startDate,
       endDate: data.current ? null : data.endDate || null,
       current: data.current,
-      description: JSON.stringify(data.description),
-      technologies: JSON.stringify(data.technologies),
+      description: data.description,
+      technologies: data.technologies,
       companyLogo: data.companyLogo || null,
     },
   });

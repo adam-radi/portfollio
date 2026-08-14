@@ -305,7 +305,7 @@ export default function Contact() {
                 <button
                   type="submit"
                   disabled={status === "loading"}
-                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-medium text-sm text-zinc-950 bg-gradient-to-r from-[#FF6B2C] via-[#FF7A3D] to-[#FF8C4D] hover:from-[#FF7A3D] hover:via-[#FF8C4D] hover:to-[#FF9D5C] shadow-lg shadow-[#FF6B2C]/25 hover:shadow-[#FF6B2C]/40 transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.99]"
+                  className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium text-sm text-zinc-950 bg-gradient-to-r from-[#FF6B2C] sm:max-w-full via-[#FF7A3D] to-[#FF8C4D] hover:from-[#FF7A3D] hover:via-[#FF8C4D] hover:to-[#FF9D5C] shadow-lg shadow-[#FF6B2C]/25 hover:shadow-[#FF6B2C]/40 transition-all duration-300 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.99]"
                 >
                   {status === "loading" ? (
                     <>
