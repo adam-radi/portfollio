@@ -43,4 +43,6 @@ node_modules/
 .next/
 .env
 .env.local
-.vercel/
+.vercel/dev.db
+dev.err.log
+dev.out.log

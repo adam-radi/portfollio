@@ -67,7 +67,67 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark scroll-smooth">
+    <html lang="en" className="scroll-smooth">
+      <head>
+        {/* Remove extension-injected attributes before React hydrates */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){
+  function clean(){
+    try{
+      var el = document.documentElement;
+      Array.from(el.attributes).forEach(function(a){
+        if(!['lang','class'].includes(a.name) && /(^crx|^crxlauncher|^extension)/i.test(a.name)){
+          el.removeAttribute(a.name);
+        }
+      });
+      Object.keys(el.dataset).forEach(function(k){
+        if(/(^crx|^dpl)/i.test(k)){
+          try{ delete el.dataset[k]; }catch(e){}
+        }
+      });
+    }catch(e){}
+  }
+  clean();
+  if(typeof window !== 'undefined'){
+    window.addEventListener('DOMContentLoaded', clean, { once: true });
+    var tries = 0; var id = setInterval(function(){ clean(); tries++; if(tries>6) clearInterval(id); }, 200);
+  }
+})();`,
+          }}
+        />
+
+        {/* JSON-LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "Adam Radi Portfolio",
+              description:
+                "Portfolio of Adam Radi, Full Stack Developer specializing in web development, IT support, and Exocad dental CAD design.",
+              url: "https://adamradi.vercel.app",
+              author: {
+                "@type": "Person",
+                name: "Adam Radi",
+                description:
+                  "Full stack developer specializing in web development, IT support, and Exocad dental CAD design.",
+                image: "/images/avatar.jpg",
+                jobTitle: "Full Stack Developer",
+              },
+              publisher: {
+                "@type": "Organization",
+                name: "Adam Radi",
+                logo: {
+                  "@type": "ImageObject",
+                  url: "/images/logo.png",
+                },
+              },
+            }),
+          }}
+        />
+      </head>
       <body className={`${geist.variable} font-sans antialiased min-h-screen bg-background text-text`}>
         {children}
       </body>

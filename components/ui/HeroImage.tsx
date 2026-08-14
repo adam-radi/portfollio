@@ -1,31 +1,47 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, MeshDistortMaterial, Sphere, OrbitControls, Environment } from "@react-three/drei";
+import { Float, AnimatedSphere } from "@react-three/drei";
 import { Code2, Server, Cpu, Sparkles, Layers } from "lucide-react";
 import * as THREE from "three";
 
-function AnimatedShape() {
+function useReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const handler = () => setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    handler();
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const listener = () => handler();
+    mq.addEventListener("change", listener);
+    return () => mq.removeEventListener("change", listener);
+  }, []);
+  return reduced;
+}
+
+function AnimatedShape({ reduced }: { reduced: boolean }) {
   const meshRef = useRef<THREE.Mesh>(null!);
   const wireRef = useRef<THREE.Mesh>(null!);
 
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     if (meshRef.current) {
-      meshRef.current.rotation.x = t * 0.2;
-      meshRef.current.rotation.y = t * 0.3;
+      if (!reduced) {
+        meshRef.current.rotation.x = t * 0.2;
+        meshRef.current.rotation.y = t * 0.3;
+      }
     }
     if (wireRef.current) {
-      wireRef.current.rotation.x = -t * 0.15;
-      wireRef.current.rotation.y = -t * 0.25;
+      if (!reduced) {
+        wireRef.current.rotation.x = -t * 0.15;
+        wireRef.current.rotation.y = -t * 0.25;
+      }
     }
   });
 
   return (
     <group scale={1.1}>
       <Float speed={2.5} rotationIntensity={1.2} floatIntensity={1.5}>
-        {/* Core distorted sphere with metallic gradient texture look */}
         <Sphere ref={meshRef} args={[1.5, 64, 64]}>
           <MeshDistortMaterial
             color="#FF6B2C"
@@ -39,7 +55,6 @@ function AnimatedShape() {
           />
         </Sphere>
 
-        {/* Outer wireframe shell */}
         <mesh ref={wireRef} scale={1.25}>
           <icosahedronGeometry args={[1.5, 2]} />
           <meshBasicMaterial
@@ -54,12 +69,38 @@ function AnimatedShape() {
   );
 }
 
+function ReducedMotionFallback() {
+  return (
+    <div className="w-full h-full flex items-center justify-center text-zinc-600">
+      <Sparkles className="w-8 h-8 animate-spin" />
+      <p className="text-sm mt-2 text-zinc-500">Motion reduced for accessibility</p>
+    </div>
+  );
+}
+
+function DefaultFallback() {
+  return (
+    <div className="w-full h-full flex items-center justify-center text-zinc-600">
+      <Sparkles className="w-8 h-8 animate-spin" />
+    </div>
+  );
+}
+
 export default function HeroImage() {
   const [mounted, setMounted] = useState(false);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  if (!mounted) {
+    return <div className="w-full h-full flex items-center justify-center" />;
+  }
+
+  if (reduced) {
+    return <ReducedMotionFallback />;
+  }
 
   return (
     <div className="relative flex items-center justify-center w-full max-w-lg mx-auto aspect-square">
@@ -73,22 +114,16 @@ export default function HeroImage() {
         <div className="absolute inset-0 bg-[radial-gradient(#FF6B2C_1px,transparent_1px)] [background-size:16px_16px] opacity-15" />
 
         {/* 3D Scene */}
-        {mounted ? (
-          <Canvas
-            camera={{ position: [0, 0, 5], fov: 50 }}
-            className="w-full h-full cursor-grab active:cursor-grabbing"
-          >
-            <ambientLight intensity={0.7} />
-            <directionalLight position={[10, 10, 5]} intensity={1.5} color="#FF8C4D" />
-            <pointLight position={[-10, -10, -10]} intensity={1} color="#FF6B2C" />
-            <AnimatedShape />
-            <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={1} />
-          </Canvas>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-zinc-600">
-            <Sparkles className="w-8 h-8 animate-spin" />
-          </div>
-        )}
+        <Canvas
+          camera={{ position: [0, 0, 5], fov: 50 }}
+          className="w-full h-full cursor-grab active:cursor-grabbing"
+        >
+          <ambientLight intensity={0.7} />
+          <directionalLight position={[10, 10, 5]} intensity={1.5} color="#FF8C4D" />
+          <pointLight position={[-10, -10, -10]} intensity={1} color="#FF6B2C" />
+          <AnimatedShape reduced={reduced} />
+          <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={1} />
+        </Canvas>
 
         {/* Floating Glassmorphism Tech Badges */}
         <div className="absolute top-6 left-6 flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-zinc-900/90 border border-zinc-700/60 shadow-lg backdrop-blur-md transition-transform duration-300 hover:scale-105">

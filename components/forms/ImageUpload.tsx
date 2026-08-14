@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import { ImagePlus, X, Upload } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -9,7 +9,6 @@ interface ImageUploadProps {
   value: string;
   onChange: (value: string) => void;
   helperText?: string;
-  accept?: string;
   className?: string;
 }
 
@@ -18,29 +17,47 @@ export function ImageUpload({
   value,
   onChange,
   helperText,
-  accept = "image/*",
   className,
 }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [previewError, setPreviewError] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const previewSrc = useMemo(() => {
     if (!value || previewError) return null;
     return value.trim() ? value : null;
   }, [value, previewError]);
 
-  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        setPreviewError(false);
-        onChange(reader.result);
-      }
-    };
-    reader.readAsDataURL(file);
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          onChange(data.url);
+        } else {
+          throw new Error(data.error || "Upload failed");
+        }
+      })
+      .catch((err) => {
+        console.error("Image upload error:", err);
+        setPreviewError(true);
+      })
+      .finally(() => {
+        setIsUploading(false);
+        if (inputRef.current) {
+          inputRef.current.value = "";
+        }
+      });
   };
 
   return (
@@ -80,7 +97,7 @@ export function ImageUpload({
       <input
         ref={inputRef}
         type="file"
-        accept={accept}
+        accept="image/*"
         onChange={handleFileChange}
         className="hidden"
       />
@@ -92,7 +109,6 @@ export function ImageUpload({
             <span>Preview</span>
           </div>
           <div className="p-4">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={previewSrc}
               alt={label}
@@ -103,7 +119,11 @@ export function ImageUpload({
         </div>
       ) : (
         <div className="flex min-h-28 items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-950/40 text-xs text-zinc-500">
-          No image selected.
+          {isUploading ? (
+            <span>Uploading...</span>
+          ) : (
+            "No image selected."
+          )}
         </div>
       )}
     </div>
