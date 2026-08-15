@@ -48,6 +48,20 @@ export default function ProjectCard({ project, featured = false, className }: Pr
               </span>
             </div>
           )}
+
+          {featured && (
+            <span className="absolute left-3 top-3 z-10 inline-flex items-center gap-1 rounded-full border border-[#FF6B2C]/30 bg-[#FF6B2C]/15 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#FF6B2C] backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#FF6B2C]" aria-hidden="true" />
+              Featured
+            </span>
+          )}
+
+          <div className="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-zinc-950/80 via-zinc-950/10 to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-700/60 bg-zinc-900/70 px-4 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
+              View Case Study
+              <ArrowUpRight className="h-3.5 w-3.5 text-[#FF6B2C]" aria-hidden="true" />
+            </span>
+          </div>
         </div>
       </Link>
 
@@ -79,14 +93,15 @@ export default function ProjectCard({ project, featured = false, className }: Pr
           ))}
         </div>
 
-        <div className="mt-auto flex items-center gap-3 pt-2">
+        <div className="mt-auto flex items-center gap-3 pt-1">
+          <span className="h-3.5 w-px bg-zinc-800" aria-hidden="true" />
           {project.githubUrl && (
             <a
               href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${project.title} GitHub repository`}
-              className="inline-flex items-center gap-1.5 rounded text-xs font-medium text-zinc-400 transition-colors hover:text-[#FF6B2C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B2C]"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-zinc-400 transition-colors hover:text-[#FF6B2C] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B2C] rounded"
             >
               <GithubIcon className="h-4 w-4" aria-hidden="true" />
               GitHub
@@ -98,7 +113,7 @@ export default function ProjectCard({ project, featured = false, className }: Pr
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${project.title} live demo`}
-              className="inline-flex items-center gap-1.5 rounded text-xs font-medium text-[#FF6B2C] transition-colors hover:text-[#FF7A3D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B2C]"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-[#FF6B2C] transition-colors hover:text-[#FF7A3D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B2C] rounded"
             >
               <ExternalLink className="h-4 w-4" aria-hidden="true" />
               Live Demo

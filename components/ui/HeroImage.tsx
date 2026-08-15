@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useEffect, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, AnimatedSphere } from "@react-three/drei";
+import { Float, Sphere, MeshDistortMaterial, OrbitControls } from "@react-three/drei";
 import { Code2, Server, Cpu, Sparkles, Layers } from "lucide-react";
 import * as THREE from "three";
 

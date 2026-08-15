@@ -88,7 +88,7 @@ export const projects: Project[] = [
     ],
     image: "/images/projects/ms-car-rent.png",
     githubUrl: "https://github.com/adam-radi/M.S-car-rent",
-    liveUrl: undefined,
+    liveUrl: "https://m-s-car-rent1.vercel.app/",
     featured: true,
   },
 ];
