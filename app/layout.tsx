@@ -1,7 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import { SITE_CONFIG } from "@/lib/constants";
+import { buildWebsiteSchema } from "@/lib/seo/structured-data";
+import JsonLd from "@/components/seo/JsonLd";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -10,6 +14,7 @@ const geist = Geist({
 
 export const viewport: Viewport = {
   themeColor: "#FF6B2C",
+  colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
 };
@@ -21,32 +26,27 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_CONFIG.name}`,
   },
   description: SITE_CONFIG.description,
-  keywords: [
-    "Adam Radi",
-    "Full Stack Developer",
-    "Next.js Developer",
-    "React Developer",
-    "Laravel Developer",
-    "IT Support Specialist",
-    "Exocad CAD Designer",
-    "Dental Technology",
-    "Morocco Developer",
-  ],
+  applicationName: `${SITE_CONFIG.name} Portfolio`,
+  keywords: SITE_CONFIG.keywords,
   authors: [{ name: SITE_CONFIG.name, url: SITE_CONFIG.url }],
   creator: SITE_CONFIG.name,
+  publisher: SITE_CONFIG.name,
+  category: "technology",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: SITE_CONFIG.locale,
     url: SITE_CONFIG.url,
+    siteName: `${SITE_CONFIG.name} Portfolio`,
     title: SITE_CONFIG.title,
     description: SITE_CONFIG.description,
-    siteName: SITE_CONFIG.name,
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_CONFIG.title,
     description: SITE_CONFIG.description,
-    creator: "@adamradi",
   },
   robots: {
     index: true,
@@ -70,6 +70,7 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
         {/* Remove extension-injected attributes before React hydrates */}
+        <meta name="google-site-verification" content="YoIS_Cyi8HUiyELT15o5lprOBtDvAmCTBjGE2J4qXzA" />
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){
@@ -97,39 +98,13 @@ export default function RootLayout({
           }}
         />
 
-        {/* JSON-LD Structured Data */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "WebSite",
-              name: "Adam Radi Portfolio",
-              description:
-                "Portfolio of Adam Radi, Full Stack Developer specializing in web development, IT support, and Exocad dental CAD design.",
-              url: "https://adamradi.vercel.app",
-              author: {
-                "@type": "Person",
-                name: "Adam Radi",
-                description:
-                  "Full stack developer specializing in web development, IT support, and Exocad dental CAD design.",
-                image: "/images/avatar.jpg",
-                jobTitle: "Full Stack Developer",
-              },
-              publisher: {
-                "@type": "Organization",
-                name: "Adam Radi",
-                logo: {
-                  "@type": "ImageObject",
-                  url: "/images/logo.png",
-                },
-              },
-            }),
-          }}
-        />
+        {/* Site-wide WebSite JSON-LD Structured Data */}
+        <JsonLd data={buildWebsiteSchema()} />
       </head>
       <body className={`${geist.variable} font-sans antialiased min-h-screen bg-background text-text`}>
         {children}
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );

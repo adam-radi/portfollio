@@ -1,16 +1,18 @@
-let prismaClient: any = null;
+import type { PrismaClient } from "@prisma/client";
+
+let prismaClient: PrismaClient | null = null;
 
 try {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { PrismaClient } = require("@prisma/client");
+  const { PrismaClient: PrismaClientCtor } = require("@prisma/client") as typeof import("@prisma/client");
 
   const globalForPrisma = globalThis as unknown as {
-    prisma: any;
+    prisma?: PrismaClient;
   };
 
   prismaClient =
     globalForPrisma.prisma ??
-    new PrismaClient({
+    new PrismaClientCtor({
       log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
     });
 
@@ -19,5 +21,5 @@ try {
   prismaClient = null;
 }
 
-export const prisma = prismaClient;
+export const prisma = prismaClient as PrismaClient;
 export default prisma;

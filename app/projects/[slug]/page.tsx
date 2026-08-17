@@ -14,7 +14,10 @@ import {
 } from "lucide-react";
 import { GithubIcon } from "@/components/ui/icons";
 import Container from "@/components/layout/Container";
+import JsonLd from "@/components/seo/JsonLd";
 import { projects } from "@/data/projects";
+import { SITE_CONFIG } from "@/lib/constants";
+import { buildProjectSchema, buildProjectBreadcrumb } from "@/lib/seo/structured-data";
 
 interface ProjectPageProps {
   params: Promise<{
@@ -22,21 +25,47 @@ interface ProjectPageProps {
   }>;
 }
 
-// Ticket 10: Dynamic Metadata Generation
+// Dynamic Metadata Generation
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
   const project = projects.find((p) => p.slug === slug);
 
   if (!project) {
     return {
-      title: "Project Not Found | Adam Radi",
+      title: "Project Not Found",
       description: "The requested project could not be found.",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
+  const url = `${SITE_CONFIG.url}/projects/${project.slug}`;
+
   return {
-    title: `${project.title} | Adam Radi Portfolio`,
+    title: project.title,
     description: project.description,
+    alternates: {
+      canonical: `/projects/${project.slug}`,
+    },
+    openGraph: {
+      type: "website",
+      locale: SITE_CONFIG.locale,
+      url,
+      siteName: `${SITE_CONFIG.name} Portfolio`,
+      title: `${project.title} — Adam Radi`,
+      description: project.description,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${project.title} by Adam Radi`,
+      description: project.description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }
 
@@ -51,13 +80,15 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   const { slug } = await params;
   const project = projects.find((p) => p.slug === slug);
 
-  // Ticket 9: Project Not Found Handling
+  // Project Not Found Handling
   if (!project) {
     notFound();
   }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 pt-28 pb-20 relative overflow-hidden">
+      <JsonLd data={buildProjectSchema(project)} />
+      <JsonLd data={buildProjectBreadcrumb(project.title, project.slug)} />
       {/* Background glow orbs */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-[#FF6B2C]/10 rounded-full blur-[120px] pointer-events-none -z-10" />
       <div className="absolute bottom-10 right-1/4 w-[400px] h-[400px] bg-[#FF7A3D]/5 rounded-full blur-[100px] pointer-events-none -z-10" />

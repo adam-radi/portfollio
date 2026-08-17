@@ -1,12 +1,20 @@
 "use client";
 
 import React from "react";
+import dynamic from "next/dynamic";
 import { motion, Variants } from "framer-motion";
 import { ArrowRight, Download, Sparkles, Code, Server, Layers } from "lucide-react";
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/button";
-import HeroImage from "@/components/ui/HeroImage";
 import { socials } from "@/data/socials";
+
+// Load the Three.js scene lazily so it doesn't block the initial bundle/LCP.
+const HeroImage = dynamic(() => import("@/components/ui/HeroImage"), {
+  ssr: false,
+  loading: () => (
+    <div className="relative flex items-center justify-center w-full max-w-lg mx-auto aspect-square" />
+  ),
+});
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },

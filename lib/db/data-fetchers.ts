@@ -45,7 +45,7 @@ export async function getProjects(): Promise<Project[]> {
       orderBy: { order: "asc" },
     });
     if (dbProjects.length === 0) return await readLocalProjects();
-    return dbProjects.map((p: any) => ({
+    return dbProjects.map((p): Project => ({
       ...p,
       githubUrl: p.githubUrl || undefined,
       liveUrl: p.liveUrl || undefined,
@@ -97,10 +97,11 @@ export async function getExperiences(): Promise<Experience[]> {
       orderBy: { order: "asc" },
     });
     if (dbExperiences.length === 0) return staticExperiences;
-    return dbExperiences.map((e: any) => ({
+    return dbExperiences.map((e): Experience => ({
       ...e,
       description: asStringArray(e.description),
       technologies: asStringArray(e.technologies),
+      companyLogo: e.companyLogo || undefined,
     }));
   } catch (error) {
     return staticExperiences;
@@ -146,10 +147,13 @@ export async function getCertifications(): Promise<Certification[]> {
       orderBy: { order: "asc" },
     });
     if (dbCerts.length === 0) return staticCertifications;
-    return dbCerts.map((c: any) => ({
+    return dbCerts.map((c): Certification => ({
       ...c,
       credentialUrl: c.credentialUrl || undefined,
       image: c.image || undefined,
+      expirationDate: c.expirationDate || undefined,
+      credentialId: c.credentialId || undefined,
+      description: c.description || undefined,
     }));
   } catch (error) {
     return staticCertifications;

@@ -20,7 +20,7 @@ export default async function EditExperiencePage({ params }: EditExperiencePageP
           ...dbExp,
           description: typeof dbExp.description === "string" ? JSON.parse(dbExp.description) : dbExp.description,
           technologies: typeof dbExp.technologies === "string" ? JSON.parse(dbExp.technologies) : dbExp.technologies,
-          endDate: dbExp.endDate || undefined,
+          endDate: dbExp.endDate,
           companyLogo: dbExp.companyLogo || undefined,
         };
       }

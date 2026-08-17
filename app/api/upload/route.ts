@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
+import type { UploadApiResponse } from "cloudinary";
 
 // Cloudinary configuration from environment variables
 cloudinary.config({
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(bytes);
 
     // Upload to Cloudinary using uploader.upload_stream
-    const result = await new Promise((resolve, reject) => {
+    const result = await new Promise<UploadApiResponse>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
           folder: "portfolio",
@@ -34,7 +35,8 @@ export async function POST(request: Request) {
         },
         (error, result) => {
           if (error) return reject(error);
-          resolve(result);
+          if (result) return resolve(result);
+          reject(new Error("Upload failed: no result returned."));
         }
       );
 
@@ -44,8 +46,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      url: (result as any).secure_url,
-      public_id: (result as any).public_id,
+      url: result.secure_url,
+      public_id: result.public_id,
     });
   } catch (error) {
     console.error("Cloudinary upload error:", error);
