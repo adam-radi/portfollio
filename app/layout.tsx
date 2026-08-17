@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { SITE_CONFIG } from "@/lib/constants";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -130,6 +131,7 @@ export default function RootLayout({
       </head>
       <body className={`${geist.variable} font-sans antialiased min-h-screen bg-background text-text`}>
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );
