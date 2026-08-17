@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Mail, Calendar, User, CheckCircle, Trash2, MailOpen, Loader2 } from "lucide-react";
 import { toggleMessageReadAction, deleteMessageAction } from "@/actions/messages";
+import type { Message } from "@/types/message";
 
 interface MessageDetailPageProps {
   params: Promise<{ id: string }>;
@@ -13,7 +14,7 @@ interface MessageDetailPageProps {
 export default function MessageDetailPage({ params }: MessageDetailPageProps) {
   const router = useRouter();
   const [loading, setLoading] = React.useState(false);
-  const [message, setMessage] = React.useState<any>(null);
+  const [message, setMessage] = React.useState<Message | null>(null);
   const [error, setError] = React.useState("");
 
   React.useEffect(() => {
@@ -76,6 +77,8 @@ export default function MessageDetailPage({ params }: MessageDetailPageProps) {
       </div>
     );
   }
+
+  if (!message) return null;
 
   return (
     <div className="max-w-3xl space-y-8">

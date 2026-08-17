@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Lock, User, Eye, EyeOff, Loader2, AlertCircle, ShieldCheck } from "lucide-react";
 
 export default function LoginPage() {
@@ -144,12 +145,12 @@ export default function LoginPage() {
 
         {/* Back link */}
         <div className="text-center">
-          <a
+          <Link
             href="/"
             className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
           >
             ← Back to Public Portfolio
-          </a>
+          </Link>
         </div>
       </div>
     </div>

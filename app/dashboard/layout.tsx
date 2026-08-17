@@ -1,8 +1,16 @@
 import React from "react";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import { getSession } from "@/lib/auth";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function DashboardLayout({
   children,

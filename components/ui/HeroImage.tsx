@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useRef, useState, useEffect, useMemo } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Sphere, MeshDistortMaterial, OrbitControls } from "@react-three/drei";
-import { Code2, Server, Cpu, Sparkles, Layers } from "lucide-react";
+import { Code2, Server, Sparkles, Layers } from "lucide-react";
 import * as THREE from "three";
 
 function useReducedMotion() {
@@ -78,25 +78,8 @@ function ReducedMotionFallback() {
   );
 }
 
-function DefaultFallback() {
-  return (
-    <div className="w-full h-full flex items-center justify-center text-zinc-600">
-      <Sparkles className="w-8 h-8 animate-spin" />
-    </div>
-  );
-}
-
 export default function HeroImage() {
-  const [mounted, setMounted] = useState(false);
   const reduced = useReducedMotion();
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return <div className="w-full h-full flex items-center justify-center" />;
-  }
 
   if (reduced) {
     return <ReducedMotionFallback />;

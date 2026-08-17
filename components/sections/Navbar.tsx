@@ -95,6 +95,7 @@ export default function Navbar({
                   <a
                     key={item.id}
                     href={item.href}
+                    aria-current={isActive ? "true" : undefined}
                     className={`relative px-4 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 ${
                       isActive
                         ? "text-white"
