@@ -19,7 +19,7 @@ export const socials: SocialLink[] = [
   {
     id: 3,
     label: "Email",
-    href: "mailto:adam.radi.2006@gmail.com",
+    href: "mailto:radi.adam.2006@gmail.com",
     icon: MailIcon,
     hoverColor: "hover:text-indigo-400 hover:border-indigo-500/50 hover:bg-indigo-500/10",
   },

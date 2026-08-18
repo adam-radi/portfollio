@@ -44,7 +44,7 @@ export default function Contact() {
 
   const shouldReduceMotion = useReducedMotion();
   const variants = shouldReduceMotion ? reducedVariants : itemVariants;
-  const email = "adam.radi.2006@gmail.com";
+  const email = "radi.adam.2006@gmail.com";
 
   const handleCopy = () => {
     navigator.clipboard.writeText(email);
