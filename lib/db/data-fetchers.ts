@@ -38,6 +38,12 @@ async function readLocalProjects(): Promise<Project[]> {
   }
 }
 
+async function writeLocalProjects(projects: Project[]) {
+  const localPath = path.join(process.cwd(), "data", "localProjects.json");
+  await fs.mkdir(path.dirname(localPath), { recursive: true });
+  await fs.writeFile(localPath, JSON.stringify(projects, null, 2), "utf-8");
+}
+
 export async function getProjects(): Promise<Project[]> {
   try {
     if (!process.env.DATABASE_URL || !prisma?.project) return await readLocalProjects();
@@ -45,7 +51,8 @@ export async function getProjects(): Promise<Project[]> {
       orderBy: { order: "asc" },
     });
     if (dbProjects.length === 0) return await readLocalProjects();
-    return dbProjects.map((p): Project => ({
+
+    const mapped = dbProjects.map((p): Project => ({
       ...p,
       githubUrl: p.githubUrl || undefined,
       liveUrl: p.liveUrl || undefined,
@@ -55,6 +62,9 @@ export async function getProjects(): Promise<Project[]> {
       challenges: asStringArray(p.challenges),
       lessonsLearned: asStringArray(p.lessonsLearned),
     }));
+
+    await writeLocalProjects(mapped);
+    return mapped;
   } catch (error) {
     return await readLocalProjects();
   }
