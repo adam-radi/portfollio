@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, Variants, useReducedMotion } from "framer-motion";
-import { Mail, Copy, Check, Send, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Mail, Copy, Check, Send, Loader2, AlertCircle, CheckCircle2, MessageCircle } from "lucide-react";
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/button";
 import { socials } from "@/data/socials";
@@ -45,6 +45,8 @@ export default function Contact() {
   const shouldReduceMotion = useReducedMotion();
   const variants = shouldReduceMotion ? reducedVariants : itemVariants;
   const email = "radi.adam.2006@gmail.com";
+  const whatsappNumber = "212702881862";
+  const whatsappLink = `https://wa.me/${whatsappNumber}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(email);
@@ -168,6 +170,19 @@ export default function Contact() {
                   >
                     Open Mail App
                   </Button>
+                </div>
+
+                <div className="pt-1">
+                  <a
+                    href={whatsappLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full rounded-xl bg-[#25D366] hover:bg-[#1fae57] text-black font-semibold px-4 py-2.5 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]"
+                    aria-label="Open WhatsApp chat"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                    <span>Chat on WhatsApp</span>
+                  </a>
                 </div>
               </div>
 
