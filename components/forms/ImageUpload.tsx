@@ -22,6 +22,7 @@ export function ImageUpload({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [previewError, setPreviewError] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
   const previewSrc = useMemo(() => {
     if (!value || previewError) return null;
@@ -33,6 +34,7 @@ export function ImageUpload({
     if (!file) return;
 
     setIsUploading(true);
+    setUploadError("");
     const formData = new FormData();
     formData.append("file", file);
 
@@ -40,9 +42,9 @@ export function ImageUpload({
       method: "POST",
       body: formData,
     })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
+      .then(async (res) => {
+        const data = await res.json();
+        if (res.ok && data.success) {
           onChange(data.url);
         } else {
           throw new Error(data.error || "Upload failed");
@@ -50,6 +52,7 @@ export function ImageUpload({
       })
       .catch((err) => {
         console.error("Image upload error:", err);
+        setUploadError(err instanceof Error ? err.message : "Upload failed");
         setPreviewError(true);
       })
       .finally(() => {
@@ -121,6 +124,8 @@ export function ImageUpload({
         <div className="flex min-h-28 items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-950/40 text-xs text-zinc-500">
           {isUploading ? (
             <span>Uploading...</span>
+          ) : uploadError ? (
+            <span className="px-4 text-center text-rose-400">{uploadError}</span>
           ) : (
             "No image selected."
           )}

@@ -26,7 +26,7 @@ async function writeLocalProjects(projects: Project[]) {
   await fs.writeFile(LOCAL_PROJECTS_FILE, JSON.stringify(projects, null, 2), "utf-8");
 }
 
-export async function createProjectAction(data: {
+type ProjectPayload = {
   title: string;
   slug: string;
   description: string;
@@ -42,36 +42,54 @@ export async function createProjectAction(data: {
   liveUrl?: string;
   featured: boolean;
   published: boolean;
-}) {
+};
+
+function projectData(data: ProjectPayload) {
+  return {
+    title: data.title,
+    slug: data.slug,
+    description: data.description,
+    overview: data.overview,
+    problem: data.problem,
+    solution: data.solution,
+    features: data.features,
+    technologies: data.technologies,
+    challenges: data.challenges,
+    lessonsLearned: data.lessonsLearned,
+    image: data.image || "/images/projects/placeholder.png",
+    githubUrl: data.githubUrl || null,
+    liveUrl: data.liveUrl || null,
+    featured: data.featured,
+    published: data.published,
+  };
+}
+
+function revalidateProjectRoutes(slug: string) {
+  revalidatePath("/");
+  revalidatePath(`/projects/${slug}`);
+  revalidatePath("/dashboard/projects");
+}
+
+export async function createProjectAction(data: ProjectPayload) {
   try {
     if (process.env.DATABASE_URL && prisma?.project) {
-      await prisma.project.create({
-        data: {
-          title: data.title,
-          slug: data.slug,
-          description: data.description,
-          overview: data.overview,
-          problem: data.problem,
-          solution: data.solution,
-          features: data.features,
-          technologies: data.technologies,
-          challenges: data.challenges,
-          lessonsLearned: data.lessonsLearned,
-          image: data.image || "/images/projects/placeholder.png",
-          githubUrl: data.githubUrl || null,
-          liveUrl: data.liveUrl || null,
-          featured: data.featured,
-          published: data.published,
-        },
+      const order = (await prisma.project.count()) + 1;
+      await prisma.project.upsert({
+        where: { slug: data.slug },
+        update: projectData(data),
+        create: { ...projectData(data), order },
       });
 
-      revalidatePath("/");
-      revalidatePath(`/projects/${data.slug}`);
-      revalidatePath("/dashboard/projects");
+      revalidateProjectRoutes(data.slug);
       return;
     }
-  } catch {
-    // fallback to local file
+  } catch (error) {
+    console.error("createProjectAction DB error:", error);
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "Could not save project. The database is not reachable — verify the DATABASE_URL environment variable."
+      );
+    }
   }
 
   const local = await readLocalProjects();
@@ -103,56 +121,33 @@ export async function createProjectAction(data: {
   revalidatePath("/dashboard/projects");
 }
 
-export async function updateProjectAction(
-  id: string,
-  data: {
-    title: string;
-    slug: string;
-    description: string;
-    overview: string;
-    problem: string;
-    solution: string;
-    features: string[];
-    technologies: string[];
-    challenges: string[];
-    lessonsLearned: string[];
-    image: string;
-    githubUrl?: string;
-    liveUrl?: string;
-    featured: boolean;
-    published: boolean;
-  }
-) {
+export async function updateProjectAction(id: string, data: ProjectPayload) {
   try {
     if (process.env.DATABASE_URL && prisma?.project) {
-      await prisma.project.update({
-        where: { id },
-        data: {
-          title: data.title,
-          slug: data.slug,
-          description: data.description,
-          overview: data.overview,
-          problem: data.problem,
-          solution: data.solution,
-          features: data.features,
-          technologies: data.technologies,
-          challenges: data.challenges,
-          lessonsLearned: data.lessonsLearned,
-          image: data.image || "/images/projects/placeholder.png",
-          githubUrl: data.githubUrl || null,
-          liveUrl: data.liveUrl || null,
-          featured: data.featured,
-          published: data.published,
-        },
-      });
+      const byId = await prisma.project.findUnique({ where: { id } });
+      if (byId) {
+        await prisma.project.update({ where: { id }, data: projectData(data) });
+      } else {
+        const bySlug = await prisma.project.findUnique({ where: { slug: data.slug } });
+        if (bySlug) {
+          await prisma.project.update({ where: { id: bySlug.id }, data: projectData(data) });
+        } else {
+          // Project only exists in static/local data — persist it so edits stick.
+          const order = (await prisma.project.count()) + 1;
+          await prisma.project.create({ data: { ...projectData(data), id, order } });
+        }
+      }
 
-      revalidatePath("/");
-      revalidatePath(`/projects/${data.slug}`);
-      revalidatePath("/dashboard/projects");
+      revalidateProjectRoutes(data.slug);
       return;
     }
-  } catch {
-    // fallback to local file
+  } catch (error) {
+    console.error("updateProjectAction DB error:", error);
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "Could not save project. The database is not reachable — verify the DATABASE_URL environment variable."
+      );
+    }
   }
 
   const local = await readLocalProjects();
@@ -188,16 +183,19 @@ export async function updateProjectAction(
 export async function deleteProjectAction(id: string) {
   try {
     if (process.env.DATABASE_URL && prisma?.project) {
-      await prisma.project.delete({
-        where: { id },
-      });
+      await prisma.project.deleteMany({ where: { id } });
 
       revalidatePath("/");
       revalidatePath("/dashboard/projects");
       return;
     }
-  } catch {
-    // fallback to local file
+  } catch (error) {
+    console.error("deleteProjectAction DB error:", error);
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "Could not delete project. The database is not reachable — verify the DATABASE_URL environment variable."
+      );
+    }
   }
 
   const local = await readLocalProjects();
@@ -211,7 +209,7 @@ export async function deleteProjectAction(id: string) {
 export async function toggleFeaturedProjectAction(id: string, featured: boolean) {
   try {
     if (process.env.DATABASE_URL && prisma?.project) {
-      await prisma.project.update({
+      await prisma.project.updateMany({
         where: { id },
         data: { featured },
       });
@@ -220,8 +218,13 @@ export async function toggleFeaturedProjectAction(id: string, featured: boolean)
       revalidatePath("/dashboard/projects");
       return;
     }
-  } catch {
-    // fallback to local file
+  } catch (error) {
+    console.error("toggleFeaturedProjectAction DB error:", error);
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "Could not update project. The database is not reachable — verify the DATABASE_URL environment variable."
+      );
+    }
   }
 
   const local = await readLocalProjects();
