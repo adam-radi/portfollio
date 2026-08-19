@@ -17,7 +17,7 @@ export async function POST(request: Request) {
 
     // 1. Fallback / Environment Admin credentials check
     const envAdminUser = process.env.ADMIN_USERNAME || "adamradi";
-    const envAdminEmail = process.env.ADMIN_EMAIL || "adam.radi.2006@gmail.com";
+    const envAdminEmail = process.env.ADMIN_EMAIL || "radi.adam.2006@gmail.com";
     const envAdminPass = process.env.ADMIN_PASSWORD || "AdamRadi2026!";
 
     let sessionData = null;
