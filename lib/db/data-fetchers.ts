@@ -19,7 +19,7 @@ function asStringArray(value: unknown): string[] {
     try {
       const parsed = JSON.parse(value);
       if (Array.isArray(parsed)) return parsed.map((v) => String(v));
-    } catch {}
+    } catch { }
   }
   return [];
 }
@@ -33,7 +33,7 @@ async function readLocalProjects(): Promise<Project[]> {
     try {
       await fs.mkdir(path.dirname(localPath), { recursive: true });
       await fs.writeFile(localPath, JSON.stringify(staticProjects, null, 2), "utf-8");
-    } catch {}
+    } catch { }
     return staticProjects;
   }
 }
@@ -45,29 +45,47 @@ async function writeLocalProjects(projects: Project[]) {
 }
 
 export async function getProjects(): Promise<Project[]> {
-  try {
-    if (!process.env.DATABASE_URL || !prisma?.project) return await readLocalProjects();
-    const dbProjects = await prisma.project.findMany({
-      orderBy: { order: "asc" },
-    });
-    if (dbProjects.length === 0) return await readLocalProjects();
+  const candidates: Project[] = [];
 
-    const mapped = dbProjects.map((p): Project => ({
-      ...p,
-      githubUrl: p.githubUrl || undefined,
-      liveUrl: p.liveUrl || undefined,
-      published: typeof p.published === "boolean" ? p.published : true,
-      features: asStringArray(p.features),
-      technologies: asStringArray(p.technologies),
-      challenges: asStringArray(p.challenges),
-      lessonsLearned: asStringArray(p.lessonsLearned),
-    }));
-
-    await writeLocalProjects(mapped);
-    return mapped;
-  } catch (error) {
-    return await readLocalProjects();
+  if (process.env.DATABASE_URL && prisma?.project) {
+    try {
+      const dbProjects = await prisma.project.findMany({
+        orderBy: { order: "asc" },
+      });
+      candidates.push(
+        ...dbProjects.map((p): Project => ({
+          ...p,
+          githubUrl: p.githubUrl || undefined,
+          liveUrl: p.liveUrl || undefined,
+          published: typeof p.published === "boolean" ? p.published : true,
+          features: asStringArray(p.features),
+          technologies: asStringArray(p.technologies),
+          challenges: asStringArray(p.challenges),
+          lessonsLearned: asStringArray(p.lessonsLearned),
+        }))
+      );
+    } catch {
+      // DB unreachable — continue with local/static data
+    }
   }
+
+  candidates.push(...(await readLocalProjects()));
+
+  // Merge sources (database first, static as fallback) so no project ever disappears.
+  const merged = new Map<string, Project>();
+  for (const project of candidates) {
+    if (!merged.has(project.slug)) {
+      merged.set(project.slug, project);
+    }
+  }
+  const list = Array.from(merged.values());
+
+  if (process.env.NODE_ENV !== "production") {
+    try {
+      await writeLocalProjects(list);
+    } catch {}
+  }
+  return list;
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | null> {

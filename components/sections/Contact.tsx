@@ -127,7 +127,7 @@ export default function Contact() {
 
           {/* Grid Layout: Left Info & Copy / Right Form */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-            
+
             {/* Left Info Panel (5 cols) */}
             <motion.div variants={variants} className="lg:col-span-5 space-y-6">
               {/* Email Direct Action Card */}
@@ -199,9 +199,8 @@ export default function Contact() {
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={`${item.label} Profile`}
-                        className={`flex items-center gap-2.5 p-3 rounded-xl bg-zinc-950/80 border border-zinc-800 text-zinc-300 transition-all duration-300 ${
-                          item.hoverColor || "hover:text-white hover:border-zinc-600"
-                        } hover:-translate-y-0.5 text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B2C]`}
+                        className={`flex items-center gap-2.5 p-3 rounded-xl bg-zinc-950/80 border border-zinc-800 text-zinc-300 transition-all duration-300 ${item.hoverColor || "hover:text-white hover:border-zinc-600"
+                          } hover:-translate-y-0.5 text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B2C]`}
                       >
                         <Icon className="w-4 h-4 shrink-0" />
                         <span>{item.label}</span>

@@ -4,6 +4,8 @@ import type { UploadApiResponse } from "cloudinary";
 import { promises as fs } from "fs";
 import path from "path";
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+
 const isCloudinaryConfigured = !!(
   process.env.CLOUDINARY_CLOUD_NAME &&
   process.env.CLOUDINARY_API_KEY &&
@@ -18,9 +20,13 @@ if (isCloudinaryConfigured) {
   });
 }
 
-async function fallbackLocalUpload(file: File) {
+async function readBuffer(file: File): Promise<Buffer> {
   const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
+  return Buffer.from(bytes);
+}
+
+async function localUpload(file: File) {
+  const buffer = await readBuffer(file);
   const ext = (file.name.split(".").pop() || "png").toLowerCase();
   const safeExt = ["jpg", "jpeg", "png", "gif", "webp"].includes(ext) ? ext : "png";
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${safeExt}`;
@@ -48,12 +54,37 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!isCloudinaryConfigured) {
-      return NextResponse.json(await fallbackLocalUpload(file));
+    const buffer = await readBuffer(file);
+    if (buffer.length > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { error: "Image is too large. Maximum size is 10 MB." },
+        { status: 413 }
+      );
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    if (!isCloudinaryConfigured) {
+      // Vercel's filesystem is read-only, so writing to /public/uploads fails in production.
+      // Cloudinary is the only durable storage path for uploaded images.
+      if (process.env.NODE_ENV === "production") {
+        return NextResponse.json(
+          {
+            error:
+              "Image uploads are unavailable: Cloudinary is not configured. Add CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET to the Vercel environment variables.",
+          },
+          { status: 503 }
+        );
+      }
+
+      try {
+        return NextResponse.json(await localUpload(file));
+      } catch (err) {
+        console.error("Local upload failed:", err);
+        return NextResponse.json(
+          { error: "Image upload failed. Check write access to public/uploads." },
+          { status: 500 }
+        );
+      }
+    }
 
     try {
       const result = await new Promise<UploadApiResponse>((resolve, reject) => {
@@ -69,7 +100,6 @@ export async function POST(request: Request) {
             reject(new Error("Upload failed: no result returned."));
           }
         );
-
         uploadStream.end(buffer);
       });
 
@@ -78,8 +108,24 @@ export async function POST(request: Request) {
         url: result.secure_url,
         public_id: result.public_id,
       });
-    } catch {
-      return NextResponse.json(await fallbackLocalUpload(file));
+    } catch (err) {
+      console.error("Cloudinary upload error:", err);
+      if (process.env.NODE_ENV === "production") {
+        return NextResponse.json(
+          { error: "Image upload failed. Check the Cloudinary configuration." },
+          { status: 502 }
+        );
+      }
+
+      try {
+        return NextResponse.json(await localUpload(file));
+      } catch (err2) {
+        console.error("Local fallback failed:", err2);
+        return NextResponse.json(
+          { error: "Image upload failed. Please try again." },
+          { status: 500 }
+        );
+      }
     }
   } catch (error) {
     console.error("Image upload error:", error);
