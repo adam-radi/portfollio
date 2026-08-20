@@ -24,6 +24,22 @@ function asStringArray(value: unknown): string[] {
   return [];
 }
 
+// Some older database rows were saved with an incorrect character encoding.
+// Keep valid custom content, but use the bundled UTF-8 value when corruption is
+// detectable (replacement characters or common UTF-8-as-Latin-1 sequences).
+function isCorruptedText(value: unknown): boolean {
+  return typeof value === "string" && /�|Ã|Â|â|ð|Ô|Ù|Ø/.test(value);
+}
+
+function readableText(value: string | null | undefined, fallback = ""): string {
+  return value && !isCorruptedText(value) ? value : fallback;
+}
+
+function readableArray(value: unknown, fallback: string[] = []): string[] {
+  const values = asStringArray(value);
+  return values.length > 0 && !values.some(isCorruptedText) ? values : fallback;
+}
+
 async function readLocalProjects(): Promise<Project[]> {
   const localPath = path.join(process.cwd(), "data", "localProjects.json");
   try {
@@ -125,12 +141,18 @@ export async function getExperiences(): Promise<Experience[]> {
       orderBy: { order: "asc" },
     });
     if (dbExperiences.length === 0) return staticExperiences;
-    return dbExperiences.map((e): Experience => ({
-      ...e,
-      description: asStringArray(e.description),
-      technologies: asStringArray(e.technologies),
-      companyLogo: e.companyLogo || undefined,
-    }));
+    return dbExperiences.map((e): Experience => {
+      const fallback = staticExperiences.find((item) => item.id === e.id);
+      return {
+        ...e,
+        company: readableText(e.company, fallback?.company),
+        role: readableText(e.role, fallback?.role),
+        location: readableText(e.location, fallback?.location),
+        description: readableArray(e.description, fallback?.description),
+        technologies: readableArray(e.technologies, fallback?.technologies),
+        companyLogo: e.companyLogo || undefined,
+      };
+    });
   } catch (error) {
     return staticExperiences;
   }
@@ -160,7 +182,20 @@ export async function getSkills(): Promise<Skill[]> {
       orderBy: { order: "asc" },
     });
     if (dbSkills.length === 0) return await readLocalSkills();
-    return dbSkills as Skill[];
+    return dbSkills.map((skill): Skill => {
+      const fallback = staticSkills.find((item) => item.id === skill.id);
+      return {
+        ...skill,
+        name: readableText(skill.name, fallback?.name),
+        category: readableText(skill.category, fallback?.category) as Skill["category"],
+        level: readableText(skill.level, fallback?.level) as Skill["level"],
+        description: readableText(skill.description, fallback?.description),
+        yearsOfExperience: skill.yearsOfExperience ?? fallback?.yearsOfExperience,
+        // Icons are short Unicode values and were especially affected by the
+        // old encoding issue; prefer the known UTF-8 icon when available.
+        icon: fallback?.icon || readableText(skill.icon, ""),
+      };
+    });
   } catch (error) {
     return await readLocalSkills();
   }
