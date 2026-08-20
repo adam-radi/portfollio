@@ -37,8 +37,9 @@ export default function Projects({ initialProjects = [] }: ProjectsProps) {
   const variants = shouldReduceMotion ? reducedVariants : itemVariants;
 
   const visibleProjects = initialProjects.filter((project) => project.published !== false);
-  const featuredProjects = visibleProjects.filter((project) => project.featured);
-  const displayProjects = featuredProjects.length > 0 ? featuredProjects : visibleProjects;
+  const displayProjects = [...visibleProjects].sort(
+    (a, b) => Number(b.featured) - Number(a.featured) || (a.order ?? 0) - (b.order ?? 0)
+  );
 
   return (
     <section
