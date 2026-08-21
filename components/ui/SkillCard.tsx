@@ -22,7 +22,7 @@ export default function SkillCard({ skill, className }: SkillCardProps) {
   return (
     <div
       className={cn(
-        "group flex items-start gap-3 p-3.5 rounded-2xl border border-zinc-800/80 bg-[#12141a]/80",
+        "group flex items-start gap-3 min-w-[120px] p-3.5 rounded-2xl border border-zinc-800/80 bg-[#12141a]/80",
         "hover:border-[#FF6B2C]/50 hover:bg-[#161822] hover:-translate-y-0.5",
         "transition-all duration-300 shadow-sm",
         className
