@@ -4,6 +4,12 @@ import ProjectForm from "@/components/forms/ProjectForm";
 import { Project } from "@/types/project";
 import { prisma } from "@/lib/prisma";
 
+// Type guard to safely convert Prisma JsonArray to string[]
+function toStringArray(value: Prisma.JsonValue): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is string => typeof item === "string");
+}
+
 interface EditProjectPageProps {
   params: Promise<{ id: string }>;
 }
@@ -16,7 +22,7 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
   if (process.env.DATABASE_URL && prisma?.project) {
     // Get project directly from Prisma/MySQL when DB is available
     const prismaResult = await prisma.project.findUnique({ where: { id } });
-    // Map Prisma result to Project shape, treating missing fields as null
+    // Map Prisma result to Project shape with safe JSON array conversion
     project = prismaResult
       ? {
           id: prismaResult.id,
@@ -26,10 +32,10 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
           overview: prismaResult.overview,
           problem: prismaResult.problem,
           solution: prismaResult.solution,
-          technologies: Array.isArray(prismaResult.technologies) ? prismaResult.technologies : [],
-          features: Array.isArray(prismaResult.features) ? prismaResult.features : [],
-          challenges: Array.isArray(prismaResult.challenges) ? prismaResult.challenges : [],
-          lessonsLearned: Array.isArray(prismaResult.lessonsLearned) ? prismaResult.lessonsLearned : [],
+          technologies: toStringArray(prismaResult.technologies),
+          features: toStringArray(prismaResult.features),
+          challenges: toStringArray(prismaResult.challenges),
+          lessonsLearned: toStringArray(prismaResult.lessonsLearned),
           image: prismaResult.image ?? "/images/projects/placeholder.png",
           githubUrl: prismaResult.githubUrl,
           liveUrl: prismaResult.liveUrl,
