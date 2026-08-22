@@ -122,34 +122,22 @@ export async function createProjectAction(data: ProjectPayload) {
 }
 
 export async function updateProjectAction(id: string, data: ProjectPayload) {
-  try {
-    if (process.env.DATABASE_URL && prisma?.project) {
-      const byId = await prisma.project.findUnique({ where: { id } });
-      if (byId) {
-        await prisma.project.update({ where: { id }, data: projectData(data) });
-      } else {
-        const bySlug = await prisma.project.findUnique({ where: { slug: data.slug } });
-        if (bySlug) {
-          await prisma.project.update({ where: { id: bySlug.id }, data: projectData(data) });
-        } else {
-          // Project only exists in static/local data — persist it so edits stick.
-          const order = (await prisma.project.count()) + 1;
-          await prisma.project.create({ data: { ...projectData(data), id, order } });
-        }
-      }
-
+  if (process.env.DATABASE_URL && prisma?.project) {
+    try {
+      await prisma.project.update({ where: { id }, data: projectData(data) });
       revalidateProjectRoutes(data.slug);
       return;
-    }
-  } catch (error) {
-    console.error("updateProjectAction DB error:", error);
-    if (process.env.NODE_ENV === "production") {
-      throw new Error(
-        "Could not save project. The database is not reachable — verify the DATABASE_URL environment variable."
-      );
+    } catch (error) {
+      console.error("updateProjectAction DB error:", error);
+      if (process.env.NODE_ENV === "production") {
+        throw new Error(
+          "Could not save project. The database is not reachable — verify the DATABASE_URL environment variable."
+        );
+      }
     }
   }
 
+  // Database unavailable — fall back to local storage
   const local = await readLocalProjects();
   const index = local.findIndex((project) => project.id === id);
   if (index === -1) throw new Error("Project not found.");
@@ -181,25 +169,27 @@ export async function updateProjectAction(id: string, data: ProjectPayload) {
 }
 
 export async function deleteProjectAction(id: string) {
-  try {
-    if (process.env.DATABASE_URL && prisma?.project) {
-      await prisma.project.deleteMany({ where: { id } });
-
+  if (process.env.DATABASE_URL && prisma?.project) {
+    try {
+      await prisma.project.delete({ where: { id } });
       revalidatePath("/");
       revalidatePath("/dashboard/projects");
       return;
-    }
-  } catch (error) {
-    console.error("deleteProjectAction DB error:", error);
-    if (process.env.NODE_ENV === "production") {
-      throw new Error(
-        "Could not delete project. The database is not reachable — verify the DATABASE_URL environment variable."
-      );
+    } catch (error) {
+      console.error("deleteProjectAction DB error:", error);
+      if (process.env.NODE_ENV === "production") {
+        throw new Error(
+          "Could not delete project. The database is not reachable — verify the DATABASE_URL environment variable."
+        );
+      }
     }
   }
 
+  // Database unavailable — fall back to local storage
   const local = await readLocalProjects();
   const next = local.filter((project) => project.id !== id);
+  if (next.length === local.length) throw new Error("Project not found.");
+
   await writeLocalProjects(next);
 
   revalidatePath("/");
@@ -207,8 +197,8 @@ export async function deleteProjectAction(id: string) {
 }
 
 export async function toggleFeaturedProjectAction(id: string, featured: boolean) {
-  try {
-    if (process.env.DATABASE_URL && prisma?.project) {
+  if (process.env.DATABASE_URL && prisma?.project) {
+    try {
       await prisma.project.updateMany({
         where: { id },
         data: { featured },
@@ -217,16 +207,17 @@ export async function toggleFeaturedProjectAction(id: string, featured: boolean)
       revalidatePath("/");
       revalidatePath("/dashboard/projects");
       return;
-    }
-  } catch (error) {
-    console.error("toggleFeaturedProjectAction DB error:", error);
-    if (process.env.NODE_ENV === "production") {
-      throw new Error(
-        "Could not update project. The database is not reachable — verify the DATABASE_URL environment variable."
-      );
+    } catch (error) {
+      console.error("toggleFeaturedProjectAction DB error:", error);
+      if (process.env.NODE_ENV === "production") {
+        throw new Error(
+          "Could not update project. The database is not reachable — verify the DATABASE_URL environment variable."
+        );
+      }
     }
   }
 
+  // Database unavailable — fall back to local storage
   const local = await readLocalProjects();
   const index = local.findIndex((project) => project.id === id);
   if (index === -1) throw new Error("Project not found.");
