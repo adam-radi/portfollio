@@ -124,9 +124,13 @@ export async function createProjectAction(data: ProjectPayload) {
 export async function updateProjectAction(id: string, data: ProjectPayload) {
   if (process.env.DATABASE_URL && prisma?.project) {
     try {
+      const existing = await prisma.project.findUnique({ where: { id } });
+      if (!existing) {
+        return { success: false, error: "Project not found in database." };
+      }
       await prisma.project.update({ where: { id }, data: projectData(data) });
       revalidateProjectRoutes(data.slug);
-      return;
+      return { success: true };
     } catch (error) {
       console.error("updateProjectAction DB error:", error);
       if (process.env.NODE_ENV === "production") {
@@ -134,6 +138,7 @@ export async function updateProjectAction(id: string, data: ProjectPayload) {
           "Could not save project. The database is not reachable — verify the DATABASE_URL environment variable."
         );
       }
+      return { success: false, error: "Database error occurred." };
     }
   }
 
@@ -171,10 +176,14 @@ export async function updateProjectAction(id: string, data: ProjectPayload) {
 export async function deleteProjectAction(id: string) {
   if (process.env.DATABASE_URL && prisma?.project) {
     try {
+      const existing = await prisma.project.findUnique({ where: { id } });
+      if (!existing) {
+        return { success: false, error: "Project not found in database." };
+      }
       await prisma.project.delete({ where: { id } });
       revalidatePath("/");
       revalidatePath("/dashboard/projects");
-      return;
+      return { success: true };
     } catch (error) {
       console.error("deleteProjectAction DB error:", error);
       if (process.env.NODE_ENV === "production") {
@@ -182,6 +191,7 @@ export async function deleteProjectAction(id: string) {
           "Could not delete project. The database is not reachable — verify the DATABASE_URL environment variable."
         );
       }
+      return { success: false, error: "Database error occurred." };
     }
   }
 
@@ -199,6 +209,10 @@ export async function deleteProjectAction(id: string) {
 export async function toggleFeaturedProjectAction(id: string, featured: boolean) {
   if (process.env.DATABASE_URL && prisma?.project) {
     try {
+      const existing = await prisma.project.findUnique({ where: { id } });
+      if (!existing) {
+        return { success: false, error: "Project not found in database." };
+      }
       await prisma.project.updateMany({
         where: { id },
         data: { featured },
@@ -206,7 +220,7 @@ export async function toggleFeaturedProjectAction(id: string, featured: boolean)
 
       revalidatePath("/");
       revalidatePath("/dashboard/projects");
-      return;
+      return { success: true };
     } catch (error) {
       console.error("toggleFeaturedProjectAction DB error:", error);
       if (process.env.NODE_ENV === "production") {
@@ -214,6 +228,7 @@ export async function toggleFeaturedProjectAction(id: string, featured: boolean)
           "Could not update project. The database is not reachable — verify the DATABASE_URL environment variable."
         );
       }
+      return { success: false, error: "Database error occurred." };
     }
   }
 
