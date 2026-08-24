@@ -15,9 +15,11 @@ import {
 import { GithubIcon } from "@/components/ui/icons";
 import Container from "@/components/layout/Container";
 import JsonLd from "@/components/seo/JsonLd";
-import { projects } from "@/data/projects";
+import { getProjects, getProjectBySlug } from "@/lib/db/data-fetchers";
 import { SITE_CONFIG } from "@/lib/constants";
 import { buildProjectSchema, buildProjectBreadcrumb } from "@/lib/seo/structured-data";
+
+export const dynamicParams = true;
 
 interface ProjectPageProps {
   params: Promise<{
@@ -28,7 +30,7 @@ interface ProjectPageProps {
 // Dynamic Metadata Generation
 export async function generateMetadata({ params }: ProjectPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const project = await getProjectBySlug(slug);
 
   if (!project) {
     return {
@@ -71,14 +73,16 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 
 // Generate static params for Next.js build optimization
 export async function generateStaticParams() {
-  return projects.map((project) => ({
+  const allProjects = await getProjects();
+  return allProjects.map((project) => ({
     slug: project.slug,
   }));
 }
 
 export default async function ProjectDetailPage({ params }: ProjectPageProps) {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const project = await getProjectBySlug(slug);
+  const allProjects = await getProjects();
 
   // Project Not Found Handling
   if (!project) {
@@ -341,8 +345,8 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
 
           {/* Next Project */}
           {(() => {
-            const currentIndex = projects.findIndex((p) => p.slug === project.slug);
-            const nextProject = projects[(currentIndex + 1) % projects.length];
+            const currentIndex = allProjects.findIndex((p) => p.slug === project.slug);
+            const nextProject = allProjects[(currentIndex + 1) % allProjects.length];
             if (!nextProject || nextProject.slug === project.slug) return null;
             return (
               <div className="pt-4">

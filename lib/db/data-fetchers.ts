@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { projects as staticProjects } from "@/data/projects";
 import { experiences as staticExperiences } from "@/data/experience";
 import { skills as staticSkills } from "@/data/skills";
+import localProjectsJson from "@/data/localProjects.json";
+import localSkillsJson from "@/data/localSkills.json";
 import { promises as fs } from "fs";
 import path from "path";
 import { certifications as staticCertifications } from "@/data/certifications";
@@ -28,7 +30,7 @@ function asStringArray(value: unknown): string[] {
 // Keep valid custom content, but use the bundled UTF-8 value when corruption is
 // detectable (replacement characters or common UTF-8-as-Latin-1 sequences).
 function isCorruptedText(value: unknown): boolean {
-  return typeof value === "string" && /�|Ã|Â|â|ð|Ô|Ù|Ø/.test(value);
+  return typeof value === "string" && /\uFFFD|Ã|Â|â|ð|Ô|Ù|Ø/.test(value);
 }
 
 function readableText(value: string | null | undefined, fallback = ""): string {
@@ -41,16 +43,12 @@ function readableArray(value: unknown, fallback: string[] = []): string[] {
 }
 
 async function readLocalProjects(): Promise<Project[]> {
-  const localPath = path.join(process.cwd(), "data", "localProjects.json");
   try {
+    const localPath = path.join(process.cwd(), "data", "localProjects.json");
     const raw = await fs.readFile(localPath, "utf-8");
     return JSON.parse(raw) as Project[];
   } catch {
-    try {
-      await fs.mkdir(path.dirname(localPath), { recursive: true });
-      await fs.writeFile(localPath, JSON.stringify(staticProjects, null, 2), "utf-8");
-    } catch { }
-    return staticProjects;
+    return localProjectsJson as unknown as Project[];
   }
 }
 
@@ -85,7 +83,29 @@ export async function getProjects(): Promise<Project[]> {
     }
   }
 
-  candidates.push(...(await readLocalProjects()));
+  const rawLocal = await readLocalProjects();
+  const localCandidates: Project[] = rawLocal.map((p) => ({
+    id: p.id,
+    title: p.title,
+    slug: p.slug,
+    description: p.description ?? "",
+    overview: p.overview ?? "",
+    problem: p.problem ?? "",
+    solution: p.solution ?? "",
+    technologies: asStringArray(p.technologies),
+    features: asStringArray(p.features),
+    challenges: asStringArray(p.challenges),
+    lessonsLearned: asStringArray(p.lessonsLearned),
+    image: p.image || "/images/projects/placeholder.png",
+    githubUrl: p.githubUrl ?? null,
+    liveUrl: p.liveUrl ?? null,
+    featured: Boolean(p.featured),
+    published: p.published ?? true,
+    order: p.order ?? 0,
+    createdAt: p.createdAt ? new Date(p.createdAt) : new Date(),
+    updatedAt: p.updatedAt ? new Date(p.updatedAt) : new Date(),
+  }));
+  candidates.push(...localCandidates);
 
   // Merge sources (database first, static as fallback) so no project ever disappears.
   const merged = new Map<string, Project>();
@@ -106,30 +126,50 @@ export async function getProjects(): Promise<Project[]> {
 
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
   try {
-    if (!process.env.DATABASE_URL || !prisma?.project) {
-      const localProjects = await readLocalProjects();
-      return localProjects.find((p) => p.slug === slug) || null;
+    if (process.env.DATABASE_URL && prisma?.project) {
+      const p = await prisma.project.findUnique({
+        where: { slug },
+      });
+      if (p) {
+        return {
+          ...p,
+          githubUrl: p.githubUrl ?? null,
+          liveUrl: p.liveUrl ?? null,
+          features: asStringArray(p.features),
+          technologies: asStringArray(p.technologies),
+          challenges: asStringArray(p.challenges),
+          lessonsLearned: asStringArray(p.lessonsLearned),
+        };
+      }
     }
-    const p = await prisma.project.findUnique({
-      where: { slug },
-    });
-    if (!p) {
-      const localProjects = await readLocalProjects();
-      return localProjects.find((proj) => proj.slug === slug) || null;
-    }
-    return {
-      ...p,
-      githubUrl: p.githubUrl ?? null,
-      liveUrl: p.liveUrl ?? null,
-      features: asStringArray(p.features),
-      technologies: asStringArray(p.technologies),
-      challenges: asStringArray(p.challenges),
-      lessonsLearned: asStringArray(p.lessonsLearned),
-    };
   } catch (error) {
-    const localProjects = await readLocalProjects();
-    return localProjects.find((p) => p.slug === slug) || null;
+    // DB unreachable — fall through to local lookup
   }
+
+  const localProjects = await readLocalProjects();
+  const found = localProjects.find((p) => p.slug === slug);
+  if (!found) return null;
+  return {
+    id: found.id,
+    title: found.title,
+    slug: found.slug,
+    description: found.description ?? "",
+    overview: found.overview ?? "",
+    problem: found.problem ?? "",
+    solution: found.solution ?? "",
+    technologies: asStringArray(found.technologies),
+    features: asStringArray(found.features),
+    challenges: asStringArray(found.challenges),
+    lessonsLearned: asStringArray(found.lessonsLearned),
+    image: found.image || "/images/projects/placeholder.png",
+    githubUrl: found.githubUrl ?? null,
+    liveUrl: found.liveUrl ?? null,
+    featured: Boolean(found.featured),
+    published: found.published ?? true,
+    order: found.order ?? 0,
+    createdAt: found.createdAt ? new Date(found.createdAt) : new Date(),
+    updatedAt: found.updatedAt ? new Date(found.updatedAt) : new Date(),
+  };
 }
 
 // ── Experiences Fetcher ─────────────────────────────────────
@@ -162,17 +202,12 @@ export async function getExperiences(): Promise<Experience[]> {
 
 export async function getSkills(): Promise<Skill[]> {
   async function readLocalSkills(): Promise<Skill[]> {
-    const localPath = path.join(process.cwd(), "data", "localSkills.json");
     try {
+      const localPath = path.join(process.cwd(), "data", "localSkills.json");
       const raw = await fs.readFile(localPath, "utf-8");
       return JSON.parse(raw) as Skill[];
-    } catch (err) {
-      // create file from staticSkills if missing
-      try {
-        await fs.mkdir(path.dirname(localPath), { recursive: true });
-        await fs.writeFile(localPath, JSON.stringify(staticSkills, null, 2), "utf-8");
-      } catch { }
-      return staticSkills;
+    } catch {
+      return (localSkillsJson as unknown as Skill[]) || staticSkills;
     }
   }
 
