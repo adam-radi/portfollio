@@ -2,6 +2,7 @@ import React from "react";
 import { notFound } from "next/navigation";
 import ProjectForm from "@/components/forms/ProjectForm";
 import { Project } from "@/types/project";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 // Type guard to safely convert Prisma JsonArray to string[]
@@ -42,6 +43,8 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
           featured: prismaResult.featured,
           published: prismaResult.published,
           order: prismaResult.order,
+          createdAt: prismaResult.createdAt,
+          updatedAt: prismaResult.updatedAt,
         }
       : null;
   } else {
@@ -68,6 +71,8 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
         featured: found.featured,
         published: found.published,
         order: found.order,
+        createdAt: found.createdAt ?? new Date(),
+        updatedAt: found.updatedAt ?? new Date(),
       };
     }
   }

@@ -106,11 +106,13 @@ export async function createProjectAction(data: ProjectPayload) {
     challenges: data.challenges,
     lessonsLearned: data.lessonsLearned,
     image: data.image || "/images/projects/placeholder.png",
-    githubUrl: data.githubUrl || undefined,
-    liveUrl: data.liveUrl || undefined,
+    githubUrl: data.githubUrl ?? null,
+    liveUrl: data.liveUrl ?? null,
     featured: data.featured,
     published: data.published,
     order: local.length + 1,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   };
 
   local.unshift(newProject);
@@ -160,10 +162,11 @@ export async function updateProjectAction(id: string, data: ProjectPayload) {
     challenges: data.challenges,
     lessonsLearned: data.lessonsLearned,
     image: data.image || "/images/projects/placeholder.png",
-    githubUrl: data.githubUrl || undefined,
-    liveUrl: data.liveUrl || undefined,
+    githubUrl: data.githubUrl ?? null,
+    liveUrl: data.liveUrl ?? null,
     featured: data.featured,
     published: data.published,
+    updatedAt: new Date(),
   };
 
   await writeLocalProjects(local);

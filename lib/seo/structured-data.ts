@@ -99,7 +99,7 @@ export function buildProjectSchema(project: {
   slug: string;
   description: string;
   technologies: string[];
-  githubUrl?: string;
+  githubUrl: string | null;
 }): JsonLdObject {
   const url = `${SITE_CONFIG.url}/projects/${project.slug}`;
   const programmingLanguage = project.technologies

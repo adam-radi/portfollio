@@ -11,9 +11,11 @@ export interface Project {
   challenges: string[];
   lessonsLearned: string[];
   image: string;
-  githubUrl?: string;
-  liveUrl?: string;
+  githubUrl: string | null;
+  liveUrl: string | null;
   featured: boolean;
-  published?: boolean;
-  order?: number;
+  published: boolean;
+  order: number;
+  createdAt: Date;
+  updatedAt: Date;
 }

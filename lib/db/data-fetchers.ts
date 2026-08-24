@@ -71,8 +71,8 @@ export async function getProjects(): Promise<Project[]> {
       candidates.push(
         ...dbProjects.map((p): Project => ({
           ...p,
-          githubUrl: p.githubUrl || undefined,
-          liveUrl: p.liveUrl || undefined,
+          githubUrl: p.githubUrl ?? null,
+          liveUrl: p.liveUrl ?? null,
           published: typeof p.published === "boolean" ? p.published : true,
           features: asStringArray(p.features),
           technologies: asStringArray(p.technologies),
@@ -119,8 +119,8 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
     }
     return {
       ...p,
-      githubUrl: p.githubUrl || undefined,
-      liveUrl: p.liveUrl || undefined,
+      githubUrl: p.githubUrl ?? null,
+      liveUrl: p.liveUrl ?? null,
       features: asStringArray(p.features),
       technologies: asStringArray(p.technologies),
       challenges: asStringArray(p.challenges),
