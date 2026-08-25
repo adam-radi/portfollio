@@ -13,6 +13,20 @@ import { Skill } from "@/types/skill";
 import { Certification } from "@/types/certification";
 import { Message } from "@/types/message";
 
+// ── Database Timeout Guard ──────────────────────────────────
+
+export function withDatabaseTimeout<T>(promise: Promise<T>, ms = 2500): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(
+        () => reject(new Error(`Database operation timed out after ${ms}ms`)),
+        ms
+      )
+    ),
+  ]);
+}
+
 // ── Projects Fetcher ────────────────────────────────────────
 
 function asStringArray(value: unknown): string[] {
@@ -63,9 +77,11 @@ export async function getProjects(): Promise<Project[]> {
 
   if (process.env.DATABASE_URL && prisma?.project) {
     try {
-      const dbProjects = await prisma.project.findMany({
-        orderBy: { order: "asc" },
-      });
+      const dbProjects = await withDatabaseTimeout(
+        prisma.project.findMany({
+          orderBy: { order: "asc" },
+        })
+      );
       candidates.push(
         ...dbProjects.map((p): Project => ({
           ...p,
@@ -127,9 +143,11 @@ export async function getProjects(): Promise<Project[]> {
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
   try {
     if (process.env.DATABASE_URL && prisma?.project) {
-      const p = await prisma.project.findUnique({
-        where: { slug },
-      });
+      const p = await withDatabaseTimeout(
+        prisma.project.findUnique({
+          where: { slug },
+        })
+      );
       if (p) {
         return {
           ...p,
@@ -177,9 +195,11 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
 export async function getExperiences(): Promise<Experience[]> {
   try {
     if (!process.env.DATABASE_URL || !prisma?.experience) return staticExperiences;
-    const dbExperiences = await prisma.experience.findMany({
-      orderBy: { order: "asc" },
-    });
+    const dbExperiences = await withDatabaseTimeout(
+      prisma.experience.findMany({
+        orderBy: { order: "asc" },
+      })
+    );
     if (dbExperiences.length === 0) return staticExperiences;
     return dbExperiences.map((e): Experience => {
       const fallback = staticExperiences.find((item) => item.id === e.id);
@@ -213,9 +233,11 @@ export async function getSkills(): Promise<Skill[]> {
 
   try {
     if (!process.env.DATABASE_URL || !prisma?.skill) return await readLocalSkills();
-    const dbSkills = await prisma.skill.findMany({
-      orderBy: { order: "asc" },
-    });
+    const dbSkills = await withDatabaseTimeout(
+      prisma.skill.findMany({
+        orderBy: { order: "asc" },
+      })
+    );
     if (dbSkills.length === 0) return await readLocalSkills();
     return dbSkills.map((skill): Skill => {
       const fallback = staticSkills.find((item) => item.id === skill.id);
@@ -241,9 +263,11 @@ export async function getSkills(): Promise<Skill[]> {
 export async function getCertifications(): Promise<Certification[]> {
   try {
     if (!process.env.DATABASE_URL || !prisma?.certification) return staticCertifications;
-    const dbCerts = await prisma.certification.findMany({
-      orderBy: { order: "asc" },
-    });
+    const dbCerts = await withDatabaseTimeout(
+      prisma.certification.findMany({
+        orderBy: { order: "asc" },
+      })
+    );
     if (dbCerts.length === 0) return staticCertifications;
     return dbCerts.map((c): Certification => ({
       ...c,
@@ -258,14 +282,16 @@ export async function getCertifications(): Promise<Certification[]> {
   }
 }
 
-// â”€â”€ Messages Fetcher â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Messages Fetcher ────────────────────────────────────────
 
 export async function getMessages(): Promise<Message[]> {
   try {
     if (!process.env.DATABASE_URL || !prisma?.message) return [];
-    return await prisma.message.findMany({
-      orderBy: { createdAt: "desc" },
-    });
+    return await withDatabaseTimeout(
+      prisma.message.findMany({
+        orderBy: { createdAt: "desc" },
+      })
+    );
   } catch (error) {
     return [];
   }

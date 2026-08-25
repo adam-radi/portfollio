@@ -4,7 +4,7 @@ import ProjectForm from "@/components/forms/ProjectForm";
 import { Project } from "@/types/project";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { getProjects } from "@/lib/db/data-fetchers";
+import { getProjects, withDatabaseTimeout } from "@/lib/db/data-fetchers";
 
 // Type guard to safely convert Prisma JsonArray to string[]
 function toStringArray(value: Prisma.JsonValue): string[] {
@@ -23,8 +23,10 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
 
   if (process.env.DATABASE_URL && prisma?.project) {
     try {
-      // Get project directly from Prisma/MySQL when DB is available
-      const prismaResult = await prisma.project.findUnique({ where: { id } });
+      // Get project directly from Prisma/MySQL when DB is available (with 2.5s timeout guard)
+      const prismaResult = await withDatabaseTimeout(
+        prisma.project.findUnique({ where: { id } })
+      );
       if (prismaResult) {
         project = {
           id: prismaResult.id,
