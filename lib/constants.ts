@@ -7,6 +7,7 @@ export const SITE_CONFIG = {
   name: "Adam Radi",
   url: "https://adamradi.dev",
   domain: "adamradi.dev",
+  googleAnalyticsId: "G-1YPCVRZXXJ",
   locale: "en_US",
   title: "Adam Radi — Full Stack Developer, IT Specialist & CAD Designer",
   description:

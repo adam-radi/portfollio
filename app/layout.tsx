@@ -105,6 +105,23 @@ export default function RootLayout({
           }}
         />
         {children}
+        {/* Google Tag (gtag.js) GA4 */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${SITE_CONFIG.googleAnalyticsId}`}
+          strategy="afterInteractive"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${SITE_CONFIG.googleAnalyticsId}');
+            `,
+          }}
+        />
         <SpeedInsights />
         <Analytics />
       </body>
