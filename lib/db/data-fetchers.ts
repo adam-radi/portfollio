@@ -261,14 +261,24 @@ export async function getSkills(): Promise<Skill[]> {
 // ── Certifications Fetcher ──────────────────────────────────
 
 export async function getCertifications(): Promise<Certification[]> {
+  async function readLocalCertifications(): Promise<Certification[]> {
+    try {
+      const localPath = path.join(process.cwd(), "data", "localCertifications.json");
+      const raw = await fs.readFile(localPath, "utf-8");
+      return JSON.parse(raw) as Certification[];
+    } catch {
+      return staticCertifications;
+    }
+  }
+
   try {
-    if (!process.env.DATABASE_URL || !prisma?.certification) return staticCertifications;
+    if (!process.env.DATABASE_URL || !prisma?.certification) return await readLocalCertifications();
     const dbCerts = await withDatabaseTimeout(
       prisma.certification.findMany({
         orderBy: { order: "asc" },
       })
     );
-    if (dbCerts.length === 0) return staticCertifications;
+    if (dbCerts.length === 0) return await readLocalCertifications();
     return dbCerts.map((c): Certification => ({
       ...c,
       credentialUrl: c.credentialUrl || undefined,
@@ -278,7 +288,7 @@ export async function getCertifications(): Promise<Certification[]> {
       description: c.description || undefined,
     }));
   } catch (error) {
-    return staticCertifications;
+    return await readLocalCertifications();
   }
 }
 

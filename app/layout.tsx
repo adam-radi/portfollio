@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
@@ -69,9 +70,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
-        {/* Remove extension-injected attributes before React hydrates */}
         <meta name="google-site-verification" content="YoIS_Cyi8HUiyELT15o5lprOBtDvAmCTBjGE2J4qXzA" />
-        <script
+        {/* Site-wide WebSite JSON-LD Structured Data */}
+        <JsonLd data={buildWebsiteSchema()} />
+      </head>
+      <body className={`${geist.variable} font-sans antialiased min-h-screen bg-background text-text`}>
+        {/* Remove extension-injected attributes before React hydrates */}
+        <Script
+          id="clean-extension-attrs"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `(function(){
   function clean(){
@@ -97,11 +104,6 @@ export default function RootLayout({
 })();`,
           }}
         />
-
-        {/* Site-wide WebSite JSON-LD Structured Data */}
-        <JsonLd data={buildWebsiteSchema()} />
-      </head>
-      <body className={`${geist.variable} font-sans antialiased min-h-screen bg-background text-text`}>
         {children}
         <SpeedInsights />
         <Analytics />

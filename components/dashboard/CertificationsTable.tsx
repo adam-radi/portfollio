@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Edit, Trash2, Award, ExternalLink } from "lucide-react";
 import { Certification } from "@/types/certification";
@@ -11,15 +11,21 @@ interface CertificationsTableProps {
 }
 
 export default function CertificationsTable({ initialCertifications }: CertificationsTableProps) {
+  const [certifications, setCertifications] = useState<Certification[]>(initialCertifications);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setCertifications(initialCertifications);
+  }, [initialCertifications]);
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this certification?")) {
       setDeletingId(id);
+      setCertifications((prev) => prev.filter((c) => c.id !== id));
       try {
         await deleteCertificationAction(id);
-      } catch {
-        alert("Failed to delete certification.");
+      } catch (err) {
+        console.error("Delete error:", err);
       } finally {
         setDeletingId(null);
       }
@@ -28,11 +34,11 @@ export default function CertificationsTable({ initialCertifications }: Certifica
 
   return (
     <div className="p-6 rounded-3xl bg-[#111319] border border-zinc-800/80 space-y-4">
-      {initialCertifications.length === 0 ? (
+      {certifications.length === 0 ? (
         <p className="text-xs text-zinc-500 italic text-center py-8">No certifications added yet.</p>
       ) : (
         <div className="space-y-3">
-          {initialCertifications.map((cert) => (
+          {certifications.map((cert) => (
             <div
               key={cert.id}
               className="p-4 rounded-2xl bg-zinc-950/60 border border-zinc-800/60 flex items-center justify-between gap-4"

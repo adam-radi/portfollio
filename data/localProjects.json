@@ -1,5 +1,93 @@
 [
   {
+    "id": "agriflow",
+    "title": "AgriFlow",
+    "slug": "agriflow",
+    "description": "A full-stack agricultural marketplace connecting farmers and buyers with real-time inventory, orders, and secure authentication.",
+    "overview": "AgriFlow is a modern digital marketplace built to streamline the buying and selling of agricultural products. It provides farmers a platform to list their produce and buyers a seamless way to discover, filter, and purchase directly from local producers.",
+    "problem": "Farmers in Morocco face challenges reaching buyers beyond their immediate region, while buyers have no reliable digital channel to source fresh agricultural products.",
+    "solution": "AgriFlow provides a structured marketplace with role-based access, real-time inventory management, a secure REST API powered by Laravel Sanctum, and a React/Redux frontend.",
+    "technologies": [
+      "Laravel",
+      "React",
+      "TypeScript",
+      "MySQL",
+      "Sanctum",
+      "Redux Toolkit",
+      "REST API",
+      "bootstrapCSS"
+    ],
+    "features": [
+      "Role-based authentication (farmer, buyer, admin) via Laravel Sanctum",
+      "Product listing with categories, stock, and pricing management",
+      "Order management dashboard for both buyers and farmers",
+      "Shopping cart with checkout flow",
+      "Admin panel for platform management"
+    ],
+    "challenges": [
+      "Designing a clean role-based permission system across Laravel + React",
+      "Managing real-time inventory synchronization",
+      "Keeping the REST API surface minimal while supporting complex business logic"
+    ],
+    "lessonsLearned": [
+      "Feature-based architecture in Laravel scales far better than layer-based",
+      "Redux Toolkit significantly simplifies async state management",
+      "API Resources are essential for predictable frontend/backend contracts"
+    ],
+    "image": "https://res.cloudinary.com/tciooegh/image/upload/v1787265501/portfolio/nyrsyx5akma7hz1uqfcd.png",
+    "githubUrl": "https://github.com/adam-radi/M.S-car-rent.git",
+    "liveUrl": "https://m-s-car-rent1.vercel.app/",
+    "featured": true,
+    "published": true,
+    "order": 0,
+    "createdAt": "2026-08-14T23:38:41.190Z",
+    "updatedAt": "2026-08-25T21:55:09.754Z"
+  },
+  {
+    "id": "ms-car-rent",
+    "title": "M'S Car Rent",
+    "slug": "ms-car-rent",
+    "description": "A multi-role car rental platform with bookings, agency management, car tracking, and multilingual support.",
+    "overview": "M'S Car Rent is a comprehensive car rental management system designed to handle the full lifecycle of vehicle rental ÔÇö from customer browsing to manager oversight and employee operations.",
+    "problem": "Traditional car rental agencies rely on manual processes and phone calls, making it difficult to scale, track vehicle availability in real-time, or offer a professional digital experience.",
+    "solution": "A web platform with distinct interfaces for visitors, customers, employees, and managers ÔÇö centralizing bookings, car tracking, agency management, pricing, and multilingual support.",
+    "technologies": [
+      "Next.js",
+      "React",
+      "TypeScript",
+      "Tailwind CSS",
+      "Prisma",
+      "MySQL"
+    ],
+    "features": [
+      "Multi-role system: visitor, customer, employee, manager",
+      "Branch and agency management",
+      "Real-time car availability and location tracking",
+      "Daily pricing with promotional discounts",
+      "Multilingual support: Arabic, French, English",
+      "Booking management with pickup location selection",
+      "Notification system for reservations and returns"
+    ],
+    "challenges": [
+      "Designing a clean multi-role permission system",
+      "Managing multilingual content across Arabic (RTL), French, and English",
+      "Handling concurrent booking conflicts"
+    ],
+    "lessonsLearned": [
+      "Role-based access control requires careful planning at the schema level",
+      "Internationalization with RTL support needs early architectural decisions",
+      "Real-time status updates improve user trust significantly"
+    ],
+    "image": "https://res.cloudinary.com/tciooegh/image/upload/v1787694956/portfolio/sdwg4fnjpcrn49naz3a9.png",
+    "githubUrl": "https://github.com/adam-radi/M.S-car-rent",
+    "liveUrl": "https://m-s-car-rent1.vercel.app/",
+    "featured": true,
+    "published": true,
+    "order": 1,
+    "createdAt": "2026-08-14T23:38:41.204Z",
+    "updatedAt": "2026-08-25T21:56:10.452Z"
+  },
+  {
     "id": "1786665458199",
     "title": "gestion de stock",
     "slug": "gestion-de-stock",
@@ -7,11 +95,6 @@
     "overview": "Ce projet a été conçu pour aider une petite ou moyenne entreprise à mieux suivre son inventaire, réduire les erreurs manuelles et garantir une gestion plus rapide et plus fiable des produits.",
     "problem": "Les entreprises de petite et moyenne taille rencontrent souvent des difficultés pour suivre leurs produits, éviter les ruptures de stock et gérer les commandes sans outils centralisés. Les méthodes manuelles prennent du temps et provoquent des erreurs.",
     "solution": "J’ai développé une application avec un tableau de bord centralisé, une gestion des produits, une gestion des fournisseurs, un suivi des sorties et des entrées de stock, ainsi que des alertes automatiques. L’architecture repose sur une interface moderne et une base de données fiable pour sécuriser les données.",
-    "features": [
-      "Dashboard de gestion",
-      "Suivi du stock disponible",
-      "Gestion des commandes"
-    ],
     "technologies": [
       "Next.js",
       "Tailwind CSS",
@@ -19,6 +102,11 @@
       "Prisma",
       "MySQL",
       "REST API"
+    ],
+    "features": [
+      "Dashboard de gestion",
+      "Suivi du stock disponible",
+      "Gestion des commandes"
     ],
     "challenges": [
       "Gérer les mises à jour du stock en temps réel",
@@ -32,84 +120,8 @@
     "liveUrl": "https://github.com/adam-radi/stock-mangment.git",
     "featured": false,
     "published": true,
-    "order": 3
-  },
-  {
-    "id": "agriflow",
-    "title": "AgriFlow",
-    "slug": "agriflow",
-    "description": "A full-stack agricultural marketplace connecting farmers and buyers with real-time inventory, orders, and secure authentication.",
-    "overview": "AgriFlow is a modern digital marketplace built to streamline the buying and selling of agricultural products. It provides farmers a platform to list their produce and buyers a seamless way to discover, filter, and purchase directly from local producers.",
-    "problem": "Farmers in Morocco face challenges reaching buyers beyond their immediate region, while buyers have no reliable digital channel to source fresh agricultural products. The market is fragmented, informal, and lacks traceability.",
-    "solution": "AgriFlow solves this by providing a structured, full-stack marketplace with role-based access (farmer/buyer/admin), real-time inventory management, a secure REST API powered by Laravel Sanctum, and a React/Redux frontend for a smooth user experience.",
-    "technologies": [
-      "Laravel",
-      "React",
-      "TypeScript",
-      "MySQL",
-      "Sanctum",
-      "Redux Toolkit",
-      "REST API",
-      "Tailwind CSS"
-    ],
-    "features": [
-      "Role-based authentication (farmer, buyer, admin) via Laravel Sanctum",
-      "Product listing with categories, stock, and pricing management",
-      "Real-time inventory update and stock alerts",
-      "Order management dashboard for both buyers and farmers",
-      "Search and filter by category, region, and price range",
-      "Secure REST API with token-based authentication",
-      "Responsive design optimized for mobile and desktop"
-    ],
-    "challenges": [
-      "Designing a robust role-based permission system that scales across three user types",
-      "Syncing React Redux state efficiently with the Laravel API without over-fetching",
-      "Handling real-time stock updates without WebSockets using polling strategies"
-    ],
-    "lessonsLearned": [
-      "The importance of designing the data model before writing any code",
-      "Redux Toolkit drastically simplifies API state management with RTK Query",
-      "Laravel Sanctum is excellent for SPA authentication when paired with CORS configuration"
-    ],
-    "image": "/images/projects/agriflow.png",
-    "featured": true
-  },
-  {
-    "id": "ms-car-rent",
-    "title": "M'S Car Rent",
-    "slug": "ms-car-rent",
-    "description": "A car rental platform with vehicle browsing, availability calendar, booking management, and an admin dashboard.",
-    "overview": "M'S Car Rent is a full-stack vehicle rental web application that allows customers to browse cars, check availability, make reservations, and manage their bookings. Administrators can manage the fleet, monitor reservations, and generate reports.",
-    "problem": "Traditional car rental businesses rely on phone calls and manual paperwork, leading to double-bookings, poor customer experience, and administrative overhead.",
-    "solution": "M'S Car Rent provides a digital platform with an online booking system, an availability calendar, automated confirmation emails, and a clean admin panel to manage fleet and reservations in real time.",
-    "technologies": [
-      "Laravel",
-      "PHP",
-      "MySQL",
-      "Blade",
-      "JavaScript",
-      "Tailwind CSS",
-      "REST API"
-    ],
-    "features": [
-      "Vehicle catalog with filtering by type, capacity, and price",
-      "Availability calendar to prevent double-bookings",
-      "Online reservation system with booking confirmation",
-      "Admin dashboard for fleet and reservation management",
-      "Client management with booking history",
-      "Responsive layout for mobile users"
-    ],
-    "challenges": [
-      "Building a conflict-free availability calendar with date range validation",
-      "Securing the admin panel against unauthorized access",
-      "Optimizing database queries for filtering large vehicle catalogs"
-    ],
-    "lessonsLearned": [
-      "Date range conflict detection requires careful boundary condition handling",
-      "Blade templating works well for server-rendered apps but has limitations for interactivity",
-      "Proper database indexing is critical for filtering queries at scale"
-    ],
-    "image": "/images/projects/ms-car-rent.png",
-    "featured": true
+    "order": 3,
+    "createdAt": "2026-08-25T21:16:47.211Z",
+    "updatedAt": "2026-08-25T21:16:47.211Z"
   }
 ]
