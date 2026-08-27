@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Edit, Trash2, Award, ExternalLink } from "lucide-react";
 import { Certification } from "@/types/certification";
@@ -13,10 +13,6 @@ interface CertificationsTableProps {
 export default function CertificationsTable({ initialCertifications }: CertificationsTableProps) {
   const [certifications, setCertifications] = useState<Certification[]>(initialCertifications);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  useEffect(() => {
-    setCertifications(initialCertifications);
-  }, [initialCertifications]);
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this certification?")) {
