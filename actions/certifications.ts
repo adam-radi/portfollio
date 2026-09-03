@@ -7,6 +7,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { Certification } from "@/types/certification";
 import { certifications as staticCertifications } from "@/data/certifications";
+import { requireAdminSession } from "@/lib/auth";
 
 const LOCAL_CERTS_FILE = path.join(process.cwd(), "data", "localCertifications.json");
 
@@ -36,6 +37,8 @@ export async function createCertificationAction(data: {
   description?: string;
   image?: string;
 }) {
+  await requireAdminSession();
+
   if (process.env.DATABASE_URL && prisma?.certification) {
     try {
       await prisma.certification.create({
@@ -92,6 +95,8 @@ export async function updateCertificationAction(
     image?: string;
   }
 ) {
+  await requireAdminSession();
+
   if (process.env.DATABASE_URL && prisma?.certification) {
     try {
       await prisma.certification.update({
@@ -139,6 +144,8 @@ export async function updateCertificationAction(
 }
 
 export async function deleteCertificationAction(id: string) {
+  await requireAdminSession();
+
   if (process.env.DATABASE_URL && prisma?.certification) {
     try {
       await prisma.certification.delete({
@@ -157,4 +164,3 @@ export async function deleteCertificationAction(id: string) {
   revalidatePath("/dashboard/certifications");
   return { success: true };
 }
-

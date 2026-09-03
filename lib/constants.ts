@@ -5,15 +5,15 @@
  */
 export const SITE_CONFIG = {
   name: "Adam Radi",
-  url: "https://adamradi.dev",
-  domain: "adamradi.dev",
+  url: "https://adam-radi.vercel.app",
+  domain: "adam-radi.vercel.app",
   googleAnalyticsId: "G-1YPCVRZXXJ",
   locale: "en_US",
   title: "Adam Radi — Full Stack Developer, IT Specialist & CAD Designer",
   description:
     "Adam Radi is a Full Stack Developer based in Morocco, building modern web applications with Next.js, React, TypeScript and Laravel, with hands-on expertise in IT support and digital dental CAD design with Exocad.",
   email: "radi.adam.2006@gmail.com",
-  location: "Maroc",
+  location: "Morocco",
   countryCode: "MA",
   serviceArea: "Morocco",
   keywords: [

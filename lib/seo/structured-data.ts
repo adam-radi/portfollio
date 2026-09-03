@@ -23,6 +23,7 @@ export function buildPersonSchema(): JsonLdObject {
     name: SITE_CONFIG.name,
     url: SITE_CONFIG.url,
     image: `${SITE_CONFIG.url}/images/adam-radi.jpeg`,
+    email: SITE_CONFIG.email,
     jobTitle: "Full Stack Developer",
     description:
       "Adam Radi is a Full Stack Developer based in Morocco, specializing in modern web application development with Next.js, React, TypeScript and Laravel, IT infrastructure support, and digital dental CAD design with Exocad.",
@@ -45,7 +46,15 @@ export function buildPersonSchema(): JsonLdObject {
     ...(sameAs.length > 0 && { sameAs }),
     address: {
       "@type": "PostalAddress",
+      addressLocality: SITE_CONFIG.location,
       addressCountry: SITE_CONFIG.countryCode,
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "professional inquiries",
+      email: SITE_CONFIG.email,
+      areaServed: SITE_CONFIG.serviceArea,
+      availableLanguage: ["English", "French", "Arabic"],
     },
   };
 }

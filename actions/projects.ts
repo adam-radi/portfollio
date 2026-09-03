@@ -6,6 +6,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { Project } from "@/types/project";
 import { projects as staticProjects } from "@/data/projects";
+import { requireAdminSession } from "@/lib/auth";
 
 const LOCAL_PROJECTS_FILE = path.join(process.cwd(), "data", "localProjects.json");
 
@@ -71,6 +72,8 @@ function revalidateProjectRoutes(slug: string) {
 }
 
 export async function createProjectAction(data: ProjectPayload) {
+  await requireAdminSession();
+
   try {
     if (process.env.DATABASE_URL && prisma?.project) {
       const order = (await prisma.project.count()) + 1;
@@ -124,6 +127,8 @@ export async function createProjectAction(data: ProjectPayload) {
 }
 
 export async function updateProjectAction(id: string, data: ProjectPayload) {
+  await requireAdminSession();
+
   if (process.env.DATABASE_URL && prisma?.project) {
     try {
       const existing = await prisma.project.findUnique({ where: { id } });
@@ -177,6 +182,8 @@ export async function updateProjectAction(id: string, data: ProjectPayload) {
 }
 
 export async function deleteProjectAction(id: string) {
+  await requireAdminSession();
+
   if (process.env.DATABASE_URL && prisma?.project) {
     try {
       const existing = await prisma.project.findUnique({ where: { id } });
@@ -210,6 +217,8 @@ export async function deleteProjectAction(id: string) {
 }
 
 export async function toggleFeaturedProjectAction(id: string, featured: boolean) {
+  await requireAdminSession();
+
   if (process.env.DATABASE_URL && prisma?.project) {
     try {
       const existing = await prisma.project.findUnique({ where: { id } });

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -35,6 +35,7 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const isActive = (href: string, exact: boolean) =>
     exact ? pathname === href : pathname.startsWith(href);
@@ -43,7 +44,8 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
     setLoggingOut(true);
     try {
       await fetch("/api/auth/logout", { method: "POST" });
-      window.location.href = "/login";
+      router.push("/login");
+      router.refresh();
     } catch {
       setLoggingOut(false);
     }
@@ -110,7 +112,7 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
               Adam Radi
             </p>
             <p className="text-[10px] text-[#FF6B2C] font-semibold tracking-wider uppercase mt-1">
-              Admin Dashboard
+              {user.username}
             </p>
           </div>
         </div>

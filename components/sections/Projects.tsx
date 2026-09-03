@@ -89,7 +89,7 @@ export default function Projects({ initialProjects = [] }: ProjectsProps) {
           >
             {displayProjects.map((project, index) => (
               <motion.div
-                key={project.id}
+                key={project.id || `project-${index}`}
                 variants={variants}
                 className={index === 0 ? "sm:col-span-2" : ""}
               >

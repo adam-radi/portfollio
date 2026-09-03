@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
+import { requireAdminSession } from "@/lib/auth";
 
 export async function createExperienceAction(data: {
   company: string;
@@ -14,6 +15,8 @@ export async function createExperienceAction(data: {
   technologies: string[];
   companyLogo?: string;
 }) {
+  await requireAdminSession();
+
   if (!process.env.DATABASE_URL || !prisma?.experience) {
     throw new Error("Database not connected.");
   }
@@ -50,6 +53,8 @@ export async function updateExperienceAction(
     companyLogo?: string;
   }
 ) {
+  await requireAdminSession();
+
   if (!process.env.DATABASE_URL || !prisma?.experience) {
     throw new Error("Database not connected.");
   }
@@ -74,6 +79,8 @@ export async function updateExperienceAction(
 }
 
 export async function deleteExperienceAction(id: string) {
+  await requireAdminSession();
+
   if (!process.env.DATABASE_URL || !prisma?.experience) {
     throw new Error("Database not connected.");
   }

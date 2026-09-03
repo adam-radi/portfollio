@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import crypto from "crypto";
 
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-key-adam-radi-portfolio-2026";
+const DEV_JWT_SECRET = "dev-only-adam-radi-portfolio-secret";
 
 export interface AdminSession {
   userId: string;
@@ -26,7 +26,33 @@ function base64urlDecode(str: string): string {
   return Buffer.from(base64, "base64").toString("utf-8");
 }
 
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (secret) {
+    if (process.env.NODE_ENV === "production" && secret.length < 32) {
+      throw new Error("JWT_SECRET must be at least 32 characters in production.");
+    }
+    return secret;
+  }
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("JWT_SECRET must be configured in production.");
+  }
+  return DEV_JWT_SECRET;
+}
+
+function constantTimeEqual(a: string, b: string): boolean {
+  const aBuffer = Buffer.from(a);
+  const bBuffer = Buffer.from(b);
+  if (aBuffer.length !== bBuffer.length) return false;
+  return crypto.timingSafeEqual(aBuffer, bBuffer);
+}
+
+export function verifyPassword(input: string, expected: string): boolean {
+  return constantTimeEqual(input, expected);
+}
+
 export async function createSessionToken(payload: AdminSession): Promise<string> {
+  const jwtSecret = getJwtSecret();
   const header = { alg: "HS256", typ: "JWT" };
   const exp = Math.floor(Date.now() / 1000) + 60 * 60 * 24; // 24 hours
   const fullPayload = { ...payload, exp, iat: Math.floor(Date.now() / 1000) };
@@ -36,7 +62,7 @@ export async function createSessionToken(payload: AdminSession): Promise<string>
 
   const signatureInput = `${encodedHeader}.${encodedPayload}`;
   const signature = crypto
-    .createHmac("sha256", JWT_SECRET)
+    .createHmac("sha256", jwtSecret)
     .update(signatureInput)
     .digest("base64url");
 
@@ -45,6 +71,7 @@ export async function createSessionToken(payload: AdminSession): Promise<string>
 
 export async function verifySessionToken(token: string): Promise<AdminSession | null> {
   try {
+    const jwtSecret = getJwtSecret();
     const parts = token.split(".");
     if (parts.length !== 3) return null;
 
@@ -52,11 +79,11 @@ export async function verifySessionToken(token: string): Promise<AdminSession | 
     const signatureInput = `${encodedHeader}.${encodedPayload}`;
 
     const expectedSignature = crypto
-      .createHmac("sha256", JWT_SECRET)
+      .createHmac("sha256", jwtSecret)
       .update(signatureInput)
       .digest("base64url");
 
-    if (signature !== expectedSignature) return null;
+    if (!constantTimeEqual(signature, expectedSignature)) return null;
 
     const payload = JSON.parse(base64urlDecode(encodedPayload));
     if (payload.exp && Math.floor(Date.now() / 1000) > payload.exp) {
@@ -69,7 +96,7 @@ export async function verifySessionToken(token: string): Promise<AdminSession | 
       username: payload.username,
       role: payload.role,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -81,12 +108,20 @@ export async function getSession(): Promise<AdminSession | null> {
   return await verifySessionToken(token);
 }
 
+export async function requireAdminSession(): Promise<AdminSession> {
+  const session = await getSession();
+  if (!session || session.role !== "ADMIN") {
+    throw new Error("Unauthorized.");
+  }
+  return session;
+}
+
 export async function setSessionCookie(token: string) {
   const cookieStore = await cookies();
   cookieStore.set("admin_session", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: "strict",
     path: "/",
     maxAge: 60 * 60 * 24, // 24 hours
   });

@@ -123,14 +123,17 @@ export async function getProjects(): Promise<Project[]> {
   }));
   candidates.push(...localCandidates);
 
-  // Merge sources (database first, static as fallback) so no project ever disappears.
-  const merged = new Map<string, Project>();
+  // Merge sources (database first, static as fallback) so no project ever disappears or duplicates.
+  const seenIds = new Set<string>();
+  const seenSlugs = new Set<string>();
+  const list: Project[] = [];
   for (const project of candidates) {
-    if (!merged.has(project.slug)) {
-      merged.set(project.slug, project);
+    if (project.id && project.slug && !seenIds.has(project.id) && !seenSlugs.has(project.slug)) {
+      seenIds.add(project.id);
+      seenSlugs.add(project.slug);
+      list.push(project);
     }
   }
-  const list = Array.from(merged.values());
 
   if (process.env.NODE_ENV !== "production") {
     try {

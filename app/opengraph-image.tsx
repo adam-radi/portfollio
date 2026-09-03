@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { SITE_CONFIG } from "@/lib/constants";
 
 export const alt = "Adam Radi — Full Stack Developer in Morocco";
 export const size = {
@@ -81,7 +82,7 @@ export default function OpengraphImage() {
               </span>
             </div>
           </div>
-          <span style={{ fontSize: "22px", color: "#71717a" }}>adamradi.dev</span>
+          <span style={{ fontSize: "22px", color: "#71717a" }}>{SITE_CONFIG.domain}</span>
         </div>
 
         <div

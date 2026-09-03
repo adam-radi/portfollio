@@ -5,7 +5,7 @@ export const experiences: Experience[] = [
     id: "smile-clinic",
     company: "Smile Clinic",
     role: "IT Support & CAD Dental Technician",
-    location: "Maroc",
+    location: "Morocco",
     startDate: "2023-01",
     endDate: null,
     current: true,

@@ -93,7 +93,7 @@ export default function Navbar({
                 <span className="font-bold text-base leading-none text-white tracking-tight group-hover:text-[#FF6B2C] transition-colors">
                   Radi <span className="text-zinc-400 font-normal"> & </span>Code
                 </span>
-                <span className="text-[10px] text-[#FF6B2C] tracking-wider uppercase font-semibold">Developer & Technology r</span>
+                <span className="text-[10px] text-[#FF6B2C] tracking-wider uppercase font-semibold">Developer & Technology</span>
               </div>
             </Link>
 

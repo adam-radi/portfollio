@@ -7,10 +7,11 @@ async function main() {
   console.log("🌱 Seeding MySQL database...\n");
 
   // ── 1. Admin User ─────────────────────────────────────────────
-  const hashedPassword = await bcrypt.hash(
-    process.env.ADMIN_PASSWORD || "AdamRadi2026!",
-    12
-  );
+  if (!process.env.ADMIN_PASSWORD) {
+    throw new Error("ADMIN_PASSWORD must be set before seeding the database.");
+  }
+
+  const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12);
 
   const adminUser = await prisma.user.upsert({
     where: { email: "radi.adam.2006@gmail.com" },

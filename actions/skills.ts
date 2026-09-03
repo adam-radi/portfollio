@@ -6,6 +6,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import { Skill } from "@/types/skill";
 import { skills as staticSkills } from "@/data/skills";
+import { requireAdminSession } from "@/lib/auth";
 
 const LOCAL_SKILLS_FILE = path.join(process.cwd(), "data", "localSkills.json");
 
@@ -33,6 +34,8 @@ export async function createSkillAction(data: {
   description?: string;
   yearsOfExperience?: number;
 }) {
+  await requireAdminSession();
+
   try {
     // Try DB first
     const shouldAttemptDb = !!process.env.DATABASE_URL && !!prisma?.skill;
@@ -86,6 +89,8 @@ export async function updateSkillAction(
     yearsOfExperience?: number;
   }
 ) {
+  await requireAdminSession();
+
   try {
     const shouldAttemptDb = !!process.env.DATABASE_URL && !!prisma?.skill;
     if (shouldAttemptDb) {
@@ -130,6 +135,8 @@ export async function updateSkillAction(
 }
 
 export async function deleteSkillAction(id: string) {
+  await requireAdminSession();
+
   try {
     const shouldAttemptDb = !!process.env.DATABASE_URL && !!prisma?.skill;
     if (shouldAttemptDb) {

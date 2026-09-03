@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { projects } from "@/data/projects";
+import { SITE_CONFIG } from "@/lib/constants";
 
 export const size = {
   width: 1200,
@@ -75,7 +76,7 @@ export default async function OpengraphImage({
               </span>
             </div>
           </div>
-          <span style={{ fontSize: "22px", color: "#71717a" }}>adamradi.dev</span>
+          <span style={{ fontSize: "22px", color: "#71717a" }}>{SITE_CONFIG.domain}</span>
         </div>
 
         <div

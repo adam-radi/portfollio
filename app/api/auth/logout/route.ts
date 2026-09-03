@@ -8,8 +8,3 @@ export async function POST() {
     { status: 200 }
   );
 }
-
-export async function GET(request: Request) {
-  await removeSessionCookie();
-  return NextResponse.redirect(new URL("/login", request.url));
-}

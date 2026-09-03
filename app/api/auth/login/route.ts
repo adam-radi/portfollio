@@ -1,9 +1,18 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { createSessionToken, setSessionCookie } from "@/lib/auth";
+import { createSessionToken, setSessionCookie, verifyPassword } from "@/lib/auth";
+import { getClientKey, isRateLimited } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
   try {
+    const clientKey = `login:${getClientKey(request)}`;
+    if (isRateLimited(clientKey, 5, 15 * 60 * 1000)) {
+      return NextResponse.json(
+        { error: "Too many login attempts. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     const { usernameOrEmail, password } = await request.json();
 
     if (!usernameOrEmail || !password) {
@@ -15,16 +24,17 @@ export async function POST(request: Request) {
 
     const input = usernameOrEmail.trim();
 
-    // 1. Fallback / Environment Admin credentials check
-    const envAdminUser = process.env.ADMIN_USERNAME || "adamradi";
-    const envAdminEmail = process.env.ADMIN_EMAIL || "radi.adam.2006@gmail.com";
-    const envAdminPass = process.env.ADMIN_PASSWORD || "AdamRadi2026!";
+    const envAdminUser = process.env.ADMIN_USERNAME || (process.env.NODE_ENV === "production" ? "" : "adamradi");
+    const envAdminEmail =
+      process.env.ADMIN_EMAIL || (process.env.NODE_ENV === "production" ? "" : "radi.adam.2006@gmail.com");
+    const envAdminPass = process.env.ADMIN_PASSWORD || "";
 
     let sessionData = null;
 
     if (
+      envAdminPass &&
       (input === envAdminUser || input === envAdminEmail) &&
-      password === envAdminPass
+      verifyPassword(password, envAdminPass)
     ) {
       sessionData = {
         userId: "admin-env",
@@ -52,8 +62,6 @@ export async function POST(request: Request) {
         let isValid = false;
         if (bcrypt) {
           isValid = await bcrypt.compare(password, user.password);
-        } else {
-          isValid = password === envAdminPass || password === user.password;
         }
 
         if (isValid) {
@@ -69,7 +77,7 @@ export async function POST(request: Request) {
 
     if (!sessionData) {
       return NextResponse.json(
-        { error: "Invalid credentials. Please check your username and password." },
+        { error: "Invalid credentials." },
         { status: 401 }
       );
     }
@@ -79,7 +87,7 @@ export async function POST(request: Request) {
     await setSessionCookie(token);
 
     return NextResponse.json(
-      { success: true, user: sessionData, redirectUrl: "/dashboard" },
+      { success: true, redirectUrl: "/dashboard" },
       { status: 200 }
     );
   } catch (error) {
