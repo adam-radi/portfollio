@@ -22,6 +22,7 @@ export function buildPersonSchema(): JsonLdObject {
     "@id": `${SITE_CONFIG.url}/#person`,
     name: SITE_CONFIG.name,
     url: SITE_CONFIG.url,
+    image: `${SITE_CONFIG.url}/images/adam-radi.jpeg`,
     jobTitle: "Full Stack Developer",
     description:
       "Adam Radi is a Full Stack Developer based in Morocco, specializing in modern web application development with Next.js, React, TypeScript and Laravel, IT infrastructure support, and digital dental CAD design with Exocad.",

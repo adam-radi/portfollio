@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowUp } from "lucide-react";
 import Container from "@/components/layout/Container";
 import { navigationLinks } from "@/data/navigation";
@@ -17,12 +18,19 @@ export default function Footer() {
       <Container>
         <div className="grid grid-cols-1 gap-10 border-b border-[#FF6B2C]/10 pb-12 md:grid-cols-12 items-start">
           <div className="md:col-span-5 space-y-4 text-center md:text-left">
-            <Link href="#hero" className="inline-flex items-center gap-2.5 group">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-[#FF6B2C] via-[#FF7A3D] to-[#FF8C4D] text-sm font-extrabold text-zinc-950 shadow-md shadow-[#FF6B2C]/20 transition-transform duration-300 group-hover:scale-105">
-                AR
+            <Link href="#hero" className="inline-flex items-center gap-2 group">
+              <div className="flex h-9 w-9 items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110">
+                <Image
+                  src="/logo.png"
+                  alt="Adam Radi Logo"
+                  width={36}
+                  height={36}
+                  className="w-full h-full object-contain"
+                  style={{ mixBlendMode: "screen" }}
+                />
               </div>
               <span className="text-lg font-bold tracking-tight text-white transition-colors group-hover:text-[#FF6B2C]">
-                Adam <span className="font-normal text-zinc-400">Radi</span>
+                Radi <span className="font-normal text-zinc-400">Code</span>
               </span>
             </Link>
 

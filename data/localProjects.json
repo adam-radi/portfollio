@@ -88,6 +88,46 @@
     "updatedAt": "2026-08-25T21:56:10.452Z"
   },
   {
+    "id": "cmtecb44w0000i804g382vga3",
+    "title": "Allofice",
+    "slug": "https://allofice.xo.je/?i=1",
+    "description": "ALLOFFICE est une plateforme e-commerce dédiée aux fournitures de bureau et au printing. Elle permet aux utilisateurs de consulter les produits, découvrir les offres et passer des commandes facilement, avec un tableau de bord administrateur pour assurer la gestion de la plateforme.",
+    "overview": "ALLOFFICE est une plateforme e-commerce dédiée aux fournitures de bureau et au printing. Le projet a pour objectif de faciliter la recherche, la consultation et l’achat de produits en ligne à travers une interface simple et moderne.",
+    "problem": "L’objectif est de simplifier l’achat de fournitures de bureau et de produits de printing en ligne, tout en offrant une gestion efficace des produits, catégories, offres et commandes.",
+    "solution": "ALLOFFICE utilise une architecture basée sur React pour le frontend, une API PHP pour le backend et MySQL pour la gestion des données. Axios assure la communication entre l’application et l’API, avec un dashboard administrateur pour gérer la plateforme.",
+    "technologies": [
+      "PHP",
+      "React",
+      "Axios",
+      "Mysql",
+      "Rest API"
+    ],
+    "features": [
+      "User registration & authentication",
+      "Product browsing & search",
+      "Product categories management",
+      "Admin dashboard"
+    ],
+    "challenges": [
+      "Connecting React frontend with PHP APIs",
+      "Managing and synchronizing data with MySQL",
+      "Implementing authentication and user roles"
+    ],
+    "lessonsLearned": [
+      "Improved my React development skills",
+      "Learned how to build and consume REST APIs",
+      "Improved my MySQL database management skills"
+    ],
+    "image": "https://res.cloudinary.com/tciooegh/image/upload/v1788005343/portfolio/nmzsbvuanfk7owvzsw11.jpg",
+    "githubUrl": "https://github.com/adam-radi/allofice.com.git",
+    "liveUrl": "https://allofice.xo.je/?i=1",
+    "featured": true,
+    "published": true,
+    "order": 3,
+    "createdAt": "2026-08-29T12:11:38.288Z",
+    "updatedAt": "2026-08-29T12:11:50.870Z"
+  },
+  {
     "id": "1786665458199",
     "title": "gestion de stock",
     "slug": "gestion-de-stock",

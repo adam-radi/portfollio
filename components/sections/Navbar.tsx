@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, Menu, X, ArrowRight } from "lucide-react";
 import Container from "@/components/layout/Container";
@@ -71,19 +72,28 @@ export default function Navbar({
       >
         <Container>
           <nav className="flex items-center justify-between" aria-label="Main Navigation">
-            {/* Brand Logo with Orange Gradient */}
+            {/* Brand Logo */}
             <Link
               href="#hero"
-              className="flex items-center gap-2.5 group focus:outline-none focus:ring-2 focus:ring-[#FF6B2C] rounded-xl"
+              className="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-[#FF6B2C] rounded-xl"
             >
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#FF6B2C] via-[#FF7A3D] to-amber-500 flex items-center justify-center text-zinc-950 font-extrabold text-sm shadow-lg shadow-[#FF6B2C]/20 group-hover:scale-105 transition-transform duration-300">
-                AR
+              {/* mix-blend-mode:screen removes black backgrounds perfectly on dark sites */}
+              <div className="flex items-center justify-center w-9 h-9 shrink-0 group-hover:scale-110 transition-transform duration-300">
+                <Image
+                  src="/logo.png"
+                  alt="Adam Radi Logo"
+                  width={36}
+                  height={36}
+                  className="w-full h-full object-contain"
+                  style={{ mixBlendMode: "screen" }}
+                  priority
+                />
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-base leading-none text-white tracking-tight group-hover:text-[#FF6B2C] transition-colors">
-                  Adam <span className="text-zinc-400 font-normal">Radi</span>
+                  Radi <span className="text-zinc-400 font-normal"> & </span>Code
                 </span>
-                <span className="text-[10px] text-[#FF6B2C] tracking-wider uppercase font-semibold">Developer</span>
+                <span className="text-[10px] text-[#FF6B2C] tracking-wider uppercase font-semibold">Developer & Technology r</span>
               </div>
             </Link>
 

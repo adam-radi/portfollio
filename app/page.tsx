@@ -56,8 +56,9 @@ export default async function Home() {
         <About />
         <Skills initialSkills={skills} />
         <Experience initialExperiences={experiences} />
-        <Certifications initialCertifications={certifications} />
         <Projects initialProjects={projects} />
+        <Certifications initialCertifications={certifications} />
+        
         <Contact />
       </main>
       <Footer />

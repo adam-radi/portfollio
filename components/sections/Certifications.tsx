@@ -1,9 +1,10 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion, Variants, useReducedMotion } from "framer-motion";
 import Container from "@/components/layout/Container";
 import CertificationCard from "@/components/ui/CertificationCard";
+import CertificationModal from "@/components/ui/CertificationModal";
 import { Certification } from "@/types/certification";
 
 interface CertificationsProps {
@@ -35,6 +36,7 @@ const reducedVariants: Variants = {
 export default function Certifications({ initialCertifications = [] }: CertificationsProps) {
   const shouldReduceMotion = useReducedMotion();
   const variants = shouldReduceMotion ? reducedVariants : itemVariants;
+  const [selectedCert, setSelectedCert] = useState<Certification | null>(null);
 
   return (
     <section
@@ -70,7 +72,7 @@ export default function Certifications({ initialCertifications = [] }: Certifica
             className="mt-4 h-0.5 w-12 rounded-full bg-gradient-to-r from-[#FF6B2C] to-[#FF7A3D]"
           />
           <motion.p variants={variants} className="mt-4 max-w-xl text-base text-zinc-400">
-            Verified credentials and learning milestones that support the portfolio narrative.
+            Verified credentials and learning milestones that support the portfolio narrative. Click any certification to view full credentials & details.
           </motion.p>
         </motion.header>
 
@@ -84,7 +86,11 @@ export default function Certifications({ initialCertifications = [] }: Certifica
           >
             {initialCertifications.map((cert) => (
               <motion.div key={cert.id} variants={variants}>
-                <CertificationCard certification={cert} className="h-full" />
+                <CertificationCard
+                  certification={cert}
+                  onClick={() => setSelectedCert(cert)}
+                  className="h-full"
+                />
               </motion.div>
             ))}
           </motion.div>
@@ -109,8 +115,16 @@ export default function Certifications({ initialCertifications = [] }: Certifica
           </motion.div>
         )}
       </Container>
+
+      {/* Certification Details Modal Window */}
+      <CertificationModal
+        certification={selectedCert}
+        isOpen={!!selectedCert}
+        onClose={() => setSelectedCert(null)}
+      />
     </section>
   );
 }
 
 export { Certifications };
+

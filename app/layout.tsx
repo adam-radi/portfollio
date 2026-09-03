@@ -36,6 +36,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  icons: {
+    icon: [
+      { url: "/logo.png", type: "image/png" },
+    ],
+    apple: [
+      { url: "/logo.png", type: "image/png" },
+    ],
+    shortcut: "/logo.png",
+  },
   openGraph: {
     type: "website",
     locale: SITE_CONFIG.locale,
@@ -43,11 +52,20 @@ export const metadata: Metadata = {
     siteName: `${SITE_CONFIG.name} Portfolio`,
     title: SITE_CONFIG.title,
     description: SITE_CONFIG.description,
+    images: [
+      {
+        url: "/logo.png",
+        width: 512,
+        height: 512,
+        alt: "Adam Radi — Developer Logo",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: SITE_CONFIG.title,
     description: SITE_CONFIG.description,
+    images: ["/logo.png"],
   },
   robots: {
     index: true,
