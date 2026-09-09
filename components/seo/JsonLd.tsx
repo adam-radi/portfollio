@@ -9,6 +9,7 @@ interface JsonLdProps {
  * (recommended by the Next.js JSON-LD guide).
  */
 export default function JsonLd({ data }: JsonLdProps) {
+  if (!data) return null;
   return (
     <script
       type="application/ld+json"

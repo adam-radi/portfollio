@@ -67,6 +67,9 @@ export const metadata: Metadata = {
     description: SITE_CONFIG.description,
     images: ["/logo.png"],
   },
+  verification: {
+    google: "YoIS_Cyi8HUiyELT15o5lprOBtDvAmCTBjGE2J4qXzA",
+  },
   robots: {
     index: true,
     follow: true,
@@ -87,12 +90,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth" suppressHydrationWarning>
-      <head>
-        <meta name="google-site-verification" content="YoIS_Cyi8HUiyELT15o5lprOBtDvAmCTBjGE2J4qXzA" />
+      <body className={`${geist.variable} font-sans antialiased min-h-screen bg-background text-text`}>
         {/* Site-wide WebSite JSON-LD Structured Data */}
         <JsonLd data={buildWebsiteSchema()} />
-      </head>
-      <body className={`${geist.variable} font-sans antialiased min-h-screen bg-background text-text`}>
         {/* Remove extension-injected attributes before React hydrates */}
         <Script
           id="clean-extension-attrs"
