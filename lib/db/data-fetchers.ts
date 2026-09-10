@@ -72,6 +72,29 @@ async function writeLocalProjects(projects: Project[]) {
   await fs.writeFile(localPath, JSON.stringify(projects, null, 2), "utf-8");
 }
 
+function cleanSlug(slug: string, fallbackTitle: string): string {
+  if (!slug || typeof slug !== "string") {
+    return fallbackTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
+  let s = slug.trim();
+  if (s.startsWith("http://") || s.startsWith("https://") || s.includes("/") || s.includes("?")) {
+    try {
+      const url = new URL(s.startsWith("http") ? s : `https://${s}`);
+      const pathSegments = url.pathname.split("/").filter(Boolean);
+      if (pathSegments.length > 0) {
+        s = pathSegments[pathSegments.length - 1];
+      } else {
+        const hostParts = url.hostname.split(".").filter((p) => p !== "www" && p !== "com" && p !== "xo" && p !== "je");
+        s = hostParts[0] || fallbackTitle;
+      }
+    } catch {
+      s = s.replace(/https?:\/\//g, "").replace(/[^a-z0-9-]+/gi, "-");
+    }
+  }
+  const sanitized = s.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "");
+  return sanitized || fallbackTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
 export async function getProjects(): Promise<Project[]> {
   const candidates: Project[] = [];
 
@@ -85,6 +108,7 @@ export async function getProjects(): Promise<Project[]> {
       candidates.push(
         ...dbProjects.map((p): Project => ({
           ...p,
+          slug: cleanSlug(p.slug, p.title),
           githubUrl: p.githubUrl ?? null,
           liveUrl: p.liveUrl ?? null,
           published: typeof p.published === "boolean" ? p.published : true,
@@ -103,7 +127,7 @@ export async function getProjects(): Promise<Project[]> {
   const localCandidates: Project[] = rawLocal.map((p) => ({
     id: p.id,
     title: p.title,
-    slug: p.slug,
+    slug: cleanSlug(p.slug, p.title),
     description: p.description ?? "",
     overview: p.overview ?? "",
     problem: p.problem ?? "",
@@ -144,53 +168,17 @@ export async function getProjects(): Promise<Project[]> {
 }
 
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
-  try {
-    if (process.env.DATABASE_URL && prisma?.project) {
-      const p = await withDatabaseTimeout(
-        prisma.project.findUnique({
-          where: { slug },
-        })
-      );
-      if (p) {
-        return {
-          ...p,
-          githubUrl: p.githubUrl ?? null,
-          liveUrl: p.liveUrl ?? null,
-          features: asStringArray(p.features),
-          technologies: asStringArray(p.technologies),
-          challenges: asStringArray(p.challenges),
-          lessonsLearned: asStringArray(p.lessonsLearned),
-        };
-      }
-    }
-  } catch (error) {
-    // DB unreachable — fall through to local lookup
+  const allProjects = await getProjects();
+  const found = allProjects.find((p) => p.slug === slug || p.id === slug);
+  if (found) return found;
+
+  const targetClean = cleanSlug(slug, "");
+  if (targetClean) {
+    const matchedClean = allProjects.find((p) => p.slug === targetClean);
+    if (matchedClean) return matchedClean;
   }
 
-  const localProjects = await readLocalProjects();
-  const found = localProjects.find((p) => p.slug === slug);
-  if (!found) return null;
-  return {
-    id: found.id,
-    title: found.title,
-    slug: found.slug,
-    description: found.description ?? "",
-    overview: found.overview ?? "",
-    problem: found.problem ?? "",
-    solution: found.solution ?? "",
-    technologies: asStringArray(found.technologies),
-    features: asStringArray(found.features),
-    challenges: asStringArray(found.challenges),
-    lessonsLearned: asStringArray(found.lessonsLearned),
-    image: found.image || "/images/projects/placeholder.png",
-    githubUrl: found.githubUrl ?? null,
-    liveUrl: found.liveUrl ?? null,
-    featured: Boolean(found.featured),
-    published: found.published ?? true,
-    order: found.order ?? 0,
-    createdAt: found.createdAt ? new Date(found.createdAt) : new Date(),
-    updatedAt: found.updatedAt ? new Date(found.updatedAt) : new Date(),
-  };
+  return null;
 }
 
 // ── Experiences Fetcher ─────────────────────────────────────

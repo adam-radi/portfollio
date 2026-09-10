@@ -45,10 +45,34 @@ type ProjectPayload = {
   published: boolean;
 };
 
+function cleanSlug(slug: string, fallbackTitle: string): string {
+  if (!slug || typeof slug !== "string") {
+    return fallbackTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
+  let s = slug.trim();
+  if (s.startsWith("http://") || s.startsWith("https://") || s.includes("/") || s.includes("?")) {
+    try {
+      const url = new URL(s.startsWith("http") ? s : `https://${s}`);
+      const pathSegments = url.pathname.split("/").filter(Boolean);
+      if (pathSegments.length > 0) {
+        s = pathSegments[pathSegments.length - 1];
+      } else {
+        const hostParts = url.hostname.split(".").filter((p) => p !== "www" && p !== "com" && p !== "xo" && p !== "je");
+        s = hostParts[0] || fallbackTitle;
+      }
+    } catch {
+      s = s.replace(/https?:\/\//g, "").replace(/[^a-z0-9-]+/gi, "-");
+    }
+  }
+  const sanitized = s.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "");
+  return sanitized || fallbackTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
 function projectData(data: ProjectPayload) {
+  const slug = cleanSlug(data.slug, data.title);
   return {
     title: data.title,
-    slug: data.slug,
+    slug,
     description: data.description,
     overview: data.overview,
     problem: data.problem,
