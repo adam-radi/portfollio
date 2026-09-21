@@ -90,7 +90,7 @@
   {
     "id": "cmtecb44w0000i804g382vga3",
     "title": "Allofice",
-    "slug": "https://allofice.xo.je/?i=1",
+    "slug": "allofice",
     "description": "ALLOFFICE est une plateforme e-commerce dédiée aux fournitures de bureau et au printing. Elle permet aux utilisateurs de consulter les produits, découvrir les offres et passer des commandes facilement, avec un tableau de bord administrateur pour assurer la gestion de la plateforme.",
     "overview": "ALLOFFICE est une plateforme e-commerce dédiée aux fournitures de bureau et au printing. Le projet a pour objectif de faciliter la recherche, la consultation et l’achat de produits en ligne à travers une interface simple et moderne.",
     "problem": "L’objectif est de simplifier l’achat de fournitures de bureau et de produits de printing en ligne, tout en offrant une gestion efficace des produits, catégories, offres et commandes.",
@@ -118,17 +118,17 @@
       "Learned how to build and consume REST APIs",
       "Improved my MySQL database management skills"
     ],
-    "image": "https://res.cloudinary.com/tciooegh/image/upload/v1788005343/portfolio/nmzsbvuanfk7owvzsw11.jpg",
+    "image": "https://res.cloudinary.com/tciooegh/image/upload/v1788996029/portfolio/l8hw7elwxrg8mgqnxdlc.png",
     "githubUrl": "https://github.com/adam-radi/allofice.com.git",
     "liveUrl": "https://allofice.xo.je/?i=1",
     "featured": true,
     "published": true,
     "order": 3,
     "createdAt": "2026-08-29T12:11:38.288Z",
-    "updatedAt": "2026-08-29T12:11:50.870Z"
+    "updatedAt": "2026-09-10T20:07:08.202Z"
   },
   {
-    "id": "1786665458199",
+    "id": "cmtvypg1j0000l504oz8z94jf",
     "title": "gestion de stock",
     "slug": "gestion-de-stock",
     "description": "Application web moderne pour gérer les produits, le stock, les fournisseurs, les ventes et les alertes de rupture en temps réel.",
@@ -136,12 +136,12 @@
     "problem": "Les entreprises de petite et moyenne taille rencontrent souvent des difficultés pour suivre leurs produits, éviter les ruptures de stock et gérer les commandes sans outils centralisés. Les méthodes manuelles prennent du temps et provoquent des erreurs.",
     "solution": "J’ai développé une application avec un tableau de bord centralisé, une gestion des produits, une gestion des fournisseurs, un suivi des sorties et des entrées de stock, ainsi que des alertes automatiques. L’architecture repose sur une interface moderne et une base de données fiable pour sécuriser les données.",
     "technologies": [
-      "Next.js",
-      "Tailwind CSS",
-      "Node.js",
-      "Prisma",
+      "React",
+      "REST API",
       "MySQL",
-      "REST API"
+      "Prisma",
+      "Node.js",
+      "Tailwind CSS"
     ],
     "features": [
       "Dashboard de gestion",
@@ -149,19 +149,19 @@
       "Gestion des commandes"
     ],
     "challenges": [
-      "Gérer les mises à jour du stock en temps réel",
-      "Organiser les données pour une bonne performance"
+      "Organiser les données pour une bonne performance",
+      "Gérer les mises à jour du stock en temps réel"
     ],
     "lessonsLearned": [
       "La simplicité d’usage est essentielle pour les outils métiers"
     ],
-    "image": "/images/projects/placeholder.png",
+    "image": "https://res.cloudinary.com/tciooegh/image/upload/v1789071038/portfolio/v5snxdzho7b3znegnm8k.png",
     "githubUrl": "https://github.com/adam-radi/stock-mangment.git",
     "liveUrl": "https://github.com/adam-radi/stock-mangment.git",
-    "featured": false,
+    "featured": true,
     "published": true,
-    "order": 3,
-    "createdAt": "2026-08-25T21:16:47.211Z",
-    "updatedAt": "2026-08-25T21:16:47.211Z"
+    "order": 4,
+    "createdAt": "2026-09-10T20:10:43.448Z",
+    "updatedAt": "2026-09-10T20:10:43.448Z"
   }
 ]

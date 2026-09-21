@@ -16,8 +16,7 @@ import { buildPersonSchema, buildProfilePageSchema } from "@/lib/seo/structured-
 
 export const metadata: Metadata = {
   title: "Full Stack Developer in Morocco — Next.js, React & Laravel",
-  description:
-    "Adam Radi is a Full Stack Developer based in Morocco, building modern web applications with Next.js, React, TypeScript and Laravel, and providing IT support and digital dental CAD (Exocad) expertise.",
+  description: SITE_CONFIG.description,
   alternates: {
     canonical: "/",
   },
@@ -27,14 +26,12 @@ export const metadata: Metadata = {
     url: `${SITE_CONFIG.url}/`,
     siteName: `${SITE_CONFIG.name} Portfolio`,
     title: "Adam Radi — Full Stack Developer in Morocco",
-    description:
-      "Full Stack Developer based in Morocco building modern web applications with Next.js, React, TypeScript and Laravel, plus IT support and Exocad dental CAD.",
+    description: SITE_CONFIG.description,
   },
   twitter: {
     card: "summary_large_image",
     title: "Adam Radi — Full Stack Developer in Morocco",
-    description:
-      "Full Stack Developer based in Morocco building modern web applications with Next.js, React, TypeScript and Laravel.",
+    description: SITE_CONFIG.description,
   },
 };
 

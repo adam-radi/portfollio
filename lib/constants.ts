@@ -10,8 +10,7 @@ export const SITE_CONFIG = {
   googleAnalyticsId: "G-1YPCVRZXXJ",
   locale: "en_US",
   title: "Adam Radi — Full Stack Developer, IT Specialist & CAD Designer",
-  description:
-    "Adam Radi is a Full Stack Developer based in Morocco, building modern web applications with Next.js, React, TypeScript and Laravel, with hands-on expertise in IT support and digital dental CAD design with Exocad.",
+  description:"Adam Radi is a Full-Stack Developer in Morocco specializing in React, Next.js, TypeScript, Laravel, and modern web applications.",
   email: "radi.adam.2006@gmail.com",
   location: "Morocco",
   countryCode: "MA",
