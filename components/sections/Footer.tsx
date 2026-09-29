@@ -18,7 +18,7 @@ export default function Footer() {
       <Container>
         <div className="grid grid-cols-1 gap-10 border-b border-[#FF6B2C]/10 pb-12 md:grid-cols-12 items-start">
           <div className="md:col-span-5 space-y-4 text-center md:text-left">
-            <Link href="#hero" className="inline-flex items-center gap-2 group">
+            <Link href="/#hero" className="inline-flex items-center gap-2 group">
               <div className="flex h-9 w-9 items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110">
                 <Image
                   src="/logo.png"

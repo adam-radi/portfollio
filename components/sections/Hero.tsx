@@ -100,7 +100,7 @@ export default function Hero() {
             {/* Call to Action Buttons with Orange Accent */}
             <motion.div variants={itemVariants} className="flex flex-wrap items-center gap-4 pt-2 w-full sm:w-auto">
               <a
-                href="#projects"
+                href="/#projects"
                 className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl text-sm font-bold text-zinc-950 bg-[#FF6B2C] hover:bg-[#FF7A3D] shadow-lg shadow-[#FF6B2C]/25 hover:shadow-[#FF6B2C]/40 transition-all duration-300 active:scale-95"
               >
                 <span>View Projects</span>
