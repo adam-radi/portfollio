@@ -82,32 +82,34 @@ export default function Projects({ initialProjects = [] }: ProjectsProps) {
         </motion.header>
 
         {displayProjects.length > 0 ? (
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-40px" }}
-            variants={containerVariants}
-            className="grid grid-cols-1 gap-6 sm:grid-cols-2"
-          >
-            {displayProjects.map((project, index) => (
-              <motion.div
-                key={project.id || `project-${index}`}
-                variants={variants}
-                className={index === 0 ? "sm:col-span-2" : ""}
-              >
-                <ProjectCard project={project} featured={index === 0} className="h-full" />
-              </motion.div>
-            ))}
-          </motion.div>
-          <div className="mt-12 text-center">
-            <Link
-              href="/projects"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-zinc-800 bg-zinc-900/60 hover:bg-zinc-800/80 text-sm font-semibold text-zinc-200 hover:text-white hover:border-[#FF6B2C]/50 transition-all shadow-md group"
+          <>
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-40px" }}
+              variants={containerVariants}
+              className="grid grid-cols-1 gap-6 sm:grid-cols-2"
             >
-              <span>Explore All Projects</span>
-              <ArrowRight className="w-4 h-4 text-[#FF6B2C] transition-transform group-hover:translate-x-1" />
-            </Link>
-          </div>
+              {displayProjects.map((project, index) => (
+                <motion.div
+                  key={project.id || `project-${index}`}
+                  variants={variants}
+                  className={index === 0 ? "sm:col-span-2" : ""}
+                >
+                  <ProjectCard project={project} featured={index === 0} className="h-full" />
+                </motion.div>
+              ))}
+            </motion.div>
+            <div className="mt-12 text-center">
+              <Link
+                href="/projects"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-zinc-800 bg-zinc-900/60 hover:bg-zinc-800/80 text-sm font-semibold text-zinc-200 hover:text-white hover:border-[#FF6B2C]/50 transition-all shadow-md group"
+              >
+                <span>Explore All Projects</span>
+                <ArrowRight className="w-4 h-4 text-[#FF6B2C] transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
+          </>
         ) : (
           <motion.div
             initial="hidden"
