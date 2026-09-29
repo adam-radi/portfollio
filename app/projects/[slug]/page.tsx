@@ -18,6 +18,7 @@ import JsonLd from "@/components/seo/JsonLd";
 import { getProjects, getProjectBySlug } from "@/lib/db/data-fetchers";
 import { SITE_CONFIG } from "@/lib/constants";
 import { buildProjectSchema, buildProjectBreadcrumb } from "@/lib/seo/structured-data";
+import Footer from "@/components/sections/Footer";
 
 export const dynamicParams = true;
 
@@ -102,7 +103,7 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           {/* Back Button */}
           <div>
             <Link
-              href="/#projects"
+              href="/projects"
               className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B2C] rounded-lg px-3 py-1.5 bg-zinc-900/40 border border-zinc-800/80"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
@@ -379,6 +380,9 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
           })()}
         </div>
       </Container>
+      <div className="mt-20">
+        <Footer />
+      </div>
     </div>
   );
 }

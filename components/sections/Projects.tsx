@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { motion, Variants, useReducedMotion } from "framer-motion";
 import Container from "@/components/layout/Container";
 import ProjectCard from "@/components/ui/ProjectCard";
@@ -97,6 +99,15 @@ export default function Projects({ initialProjects = [] }: ProjectsProps) {
               </motion.div>
             ))}
           </motion.div>
+          <div className="mt-12 text-center">
+            <Link
+              href="/projects"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-zinc-800 bg-zinc-900/60 hover:bg-zinc-800/80 text-sm font-semibold text-zinc-200 hover:text-white hover:border-[#FF6B2C]/50 transition-all shadow-md group"
+            >
+              <span>Explore All Projects</span>
+              <ArrowRight className="w-4 h-4 text-[#FF6B2C] transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
         ) : (
           <motion.div
             initial="hidden"

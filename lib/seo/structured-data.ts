@@ -60,6 +60,59 @@ export function buildPersonSchema(): JsonLdObject {
 }
 
 /**
+ * BreadcrumbList schema for the /projects archive page.
+ */
+export function buildProjectsPageBreadcrumb(): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_CONFIG.url,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Projects",
+        item: `${SITE_CONFIG.url}/projects`,
+      },
+    ],
+  };
+}
+
+/**
+ * CollectionPage + ItemList schema for the /projects archive page.
+ */
+export function buildProjectsCollectionSchema(
+  projects: Array<{ title: string; slug: string; description: string }>
+): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${SITE_CONFIG.url}/projects/#collection`,
+    name: "Projects | Adam Radi",
+    description: "Explore web applications and software projects developed by Adam Radi.",
+    url: `${SITE_CONFIG.url}/projects`,
+    isPartOf: {
+      "@id": `${SITE_CONFIG.url}/#website`,
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: projects.map((p, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: p.title,
+        url: `${SITE_CONFIG.url}/projects/${p.slug}`,
+        description: p.description,
+      })),
+    },
+  };
+}
+
+/**
  * WebSite schema for site-wide structured data.
  */
 export function buildWebsiteSchema(): JsonLdObject {
@@ -155,7 +208,7 @@ export function buildProjectBreadcrumb(projectTitle: string, slug: string): Json
         "@type": "ListItem",
         position: 2,
         name: "Projects",
-        item: `${SITE_CONFIG.url}/#projects`,
+        item: `${SITE_CONFIG.url}/projects`,
       },
       {
         "@type": "ListItem",

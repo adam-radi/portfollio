@@ -44,11 +44,22 @@ export default function Footer() {
             <ul className="grid grid-cols-2 gap-2 text-xs font-medium text-zinc-400">
               {navigationLinks.map((item) => (
                 <li key={item.id}>
-                  <a href={item.href} className="inline-block py-1 transition-colors hover:text-[#FF6B2C]">
+                  <Link
+                    href={item.href.startsWith("#") ? `/${item.href}` : item.href}
+                    className="inline-block py-1 transition-colors hover:text-[#FF6B2C]"
+                  >
                     {item.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href="/projects"
+                  className="inline-block py-1 transition-colors text-zinc-300 hover:text-[#FF6B2C] font-semibold"
+                >
+                  All Projects
+                </Link>
+              </li>
             </ul>
           </div>
 

@@ -74,7 +74,7 @@ export default function Navbar({
           <nav className="flex items-center justify-between" aria-label="Main Navigation">
             {/* Brand Logo */}
             <Link
-              href="#hero"
+              href="/"
               className="flex items-center gap-2 group focus:outline-none focus:ring-2 focus:ring-[#FF6B2C] rounded-xl"
             >
               {/* mix-blend-mode:screen removes black backgrounds perfectly on dark sites */}
