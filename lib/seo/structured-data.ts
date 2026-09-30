@@ -28,6 +28,7 @@ export function buildPersonSchema(): JsonLdObject {
     description:
       "Adam Radi is a Full Stack Developer in Morocco specializing in Next.js, React, TypeScript, Laravel, IT support, and Exocad CAD.",
     knowsAbout: [
+      "Full-Stack Development",
       "Next.js",
       "React",
       "TypeScript",
@@ -46,7 +47,6 @@ export function buildPersonSchema(): JsonLdObject {
     ...(sameAs.length > 0 && { sameAs }),
     address: {
       "@type": "PostalAddress",
-      addressLocality: SITE_CONFIG.location,
       addressCountry: SITE_CONFIG.countryCode,
     },
     contactPoint: {
