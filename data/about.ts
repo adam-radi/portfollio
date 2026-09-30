@@ -18,7 +18,7 @@ export const about: AboutData = {
   story: [
     "I started my journey in tech with a passion for problem-solving — from fixing computers to building web applications from scratch.",
     "Over time, I've developed a multi-disciplinary skill set spanning Full Stack development (React, Next.js, Laravel), IT infrastructure support, and precision dental CAD design using Exocad.",
-    "I thrive in environments where technical precision and creative thinking meet, and I'm always looking for the next challenge to tackle.",
+    "This portfolio itself is built with Next.js App Router — implementing SSR, dynamic routing, and structured data — a reflection of the same standards I bring to every project I build.",
   ],
 
   stats: [
