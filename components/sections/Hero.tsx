@@ -52,7 +52,7 @@ export default function Hero() {
         >
           {/* LEFT COLUMN: Bio & CTAs */}
           <div className="lg:col-span-7 flex flex-col items-start space-y-6 text-left">
-            
+
             {/* Status Pill Badge */}
             <motion.div variants={itemVariants}>
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FF6B2C]/10 border border-[#FF6B2C]/25 backdrop-blur-md">
@@ -61,7 +61,7 @@ export default function Hero() {
                   <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#FF6B2C]" />
                 </span>
                 <span className="text-xs font-semibold text-[#FF6B2C] tracking-wide">
-                  Available for New Projects 
+                  Available for New Projects
                 </span>
               </div>
             </motion.div>
@@ -94,7 +94,7 @@ export default function Hero() {
 
             {/* Pitch Description */}
             <motion.p variants={itemVariants} className="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-2xl">
-              I build modern, high-performance web applications, architect secure IT infrastructure, and design digital dental 3D restorations with Exocad.
+              Full-Stack Developer specializing in React, Next.js, TypeScript, and Laravel, creating modern websites and web applications for businesses and digital projects. I also bring hands-on experience in IT support, networking, and digital technologies.
             </motion.p>
 
             {/* Call to Action Buttons with Orange Accent */}

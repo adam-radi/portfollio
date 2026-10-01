@@ -1,4 +1,5 @@
 import { SITE_CONFIG } from "@/lib/constants";
+import { certifications } from "@/data/certifications";
 
 type JsonLdObject = Record<string, unknown>;
 
@@ -56,6 +57,16 @@ export function buildPersonSchema(): JsonLdObject {
       areaServed: SITE_CONFIG.serviceArea,
       availableLanguage: ["English", "French", "Arabic"],
     },
+    hasCredential: certifications.map((cert) => ({
+      "@type": "EducationalOccupationalCredential",
+      credentialCategory: "Certification",
+      name: cert.title,
+      recognizedBy: {
+        "@type": "Organization",
+        name: cert.issuer,
+      },
+      ...(cert.credentialUrl && { url: cert.credentialUrl }),
+    })),
   };
 }
 

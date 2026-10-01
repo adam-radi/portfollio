@@ -15,7 +15,7 @@ import { SITE_CONFIG } from "@/lib/constants";
 import { buildPersonSchema, buildProfilePageSchema } from "@/lib/seo/structured-data";
 
 export const metadata: Metadata = {
-  title: "Full Stack Developer in Morocco — Next.js, React & Laravel",
+  title: "Adam Radi — Full Stack Developer in Morocco | Next.js, React & Laravel",
   description: SITE_CONFIG.description,
   alternates: {
     canonical: "/",
