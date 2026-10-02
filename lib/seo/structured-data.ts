@@ -1,5 +1,6 @@
 import { SITE_CONFIG } from "@/lib/constants";
 import { certifications } from "@/data/certifications";
+import { faqItems, faqAnswerToText } from "@/data/faq";
 
 type JsonLdObject = Record<string, unknown>;
 
@@ -162,6 +163,28 @@ export function buildProfilePageSchema(): JsonLdObject {
     mainEntity: {
       "@id": `${SITE_CONFIG.url}/#person`,
     },
+  };
+}
+
+/**
+ * FAQPage schema for the homepage FAQ section.
+ * Built from the exact same data rendered in the visible accordion,
+ * so the structured data always matches the on-page content.
+ */
+export function buildFaqPageSchema(): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "@id": `${SITE_CONFIG.url}/#faq`,
+    url: SITE_CONFIG.url,
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faqAnswerToText(item),
+      },
+    })),
   };
 }
 

@@ -7,12 +7,13 @@ import Skills from "@/components/sections/Skills";
 import Experience from "@/components/sections/Experience";
 import Certifications from "@/components/sections/Certifications";
 import Projects from "@/components/sections/Projects";
+import Faq from "@/components/sections/Faq";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
 import JsonLd from "@/components/seo/JsonLd";
 import { getProjects, getExperiences, getSkills, getCertifications } from "@/lib/db/data-fetchers";
 import { SITE_CONFIG } from "@/lib/constants";
-import { buildPersonSchema, buildProfilePageSchema } from "@/lib/seo/structured-data";
+import { buildPersonSchema, buildProfilePageSchema, buildFaqPageSchema } from "@/lib/seo/structured-data";
 
 export const metadata: Metadata = {
   title: "Adam Radi — Full Stack Developer in Morocco | Next.js, React & Laravel",
@@ -47,6 +48,7 @@ export default async function Home() {
     <PageWrapper>
       <JsonLd data={buildPersonSchema()} />
       <JsonLd data={buildProfilePageSchema()} />
+      <JsonLd data={buildFaqPageSchema()} />
       <Navbar />
       <main>
         <Hero />
@@ -55,7 +57,7 @@ export default async function Home() {
         <Experience initialExperiences={experiences} />
         <Projects initialProjects={projects} />
         <Certifications initialCertifications={certifications} />
-        
+        <Faq />
         <Contact />
       </main>
       <Footer />
