@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Adam Radi — Full-Stack Developer Portfolio
 
-## Getting Started
+https://adam-radi.vercel.app
 
-First, run the development server:
+Personal portfolio of **Adam Radi**, a Full-Stack Developer based in Morocco specializing in modern web development with **React, Next.js, TypeScript, Laravel and PHP**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This portfolio showcases web applications, business websites, software projects, technical experience, certifications and full-stack development work.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## About Adam Radi
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Adam Radi is a **Full-Stack Developer in Morocco** focused on building modern, responsive and scalable web applications.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+His main areas of expertise include:
 
-## Learn More
+- Full-Stack Web Development
+- React.js Development
+- Next.js Development
+- TypeScript
+- Laravel & PHP
+- REST API Development
+- Database Design
+- Responsive Web Design
+- Web Performance
+- SEO and modern web technologies
 
-To learn more about Next.js, take a look at the following resources:
+## Featured Projects
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The portfolio presents several real-world software and web development projects, including:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **AgriFlow** — agricultural marketplace and management platform
+- **M.S. Car Rent** — full-stack car rental platform
+- **Clinic WhatsApp Manager** — desktop automation solution for dental clinics
+- **Allofice** — web application project
+- **KRI Online** — PHP social media web application
+- Other web development and software projects
 
-## Deploy on Vercel
+## Technology Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Frontend
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- React.js
+- Next.js
+- TypeScript
+- JavaScript
+- HTML5
+- CSS3
+- Tailwind CSS
+- Framer Motion
+
+### Backend
+
+- Laravel
+- PHP
+- Node.js
+- REST APIs
+
+### Databases
+
+- MySQL
+- MongoDB
+- SQLite
+
+### Tools
+
+- Git
+- GitHub
+- Vercel
+- Cloudinary
+- Prisma
+
+## SEO & Performance
+
+The portfolio is built with a focus on:
+
+- Semantic HTML
+- Search engine optimization
+- Structured data
+- Accessible interfaces
+- Responsive design
+- Performance optimization
+- Core Web Vitals
+- Internal linking
+- Search engine discoverability
+
+## Portfolio
+
+Visit the personal portfolio of Adam Radi to explore projects, skills, experience and contact information.
+
+## Developer
+
+**Adam Radi**  
+Full-Stack Developer — Morocco
