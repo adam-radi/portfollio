@@ -11,6 +11,8 @@ import {
   Wrench,
   Award,
   MessageSquare,
+  FileText,
+  Star,
   LogOut,
   Menu,
   X,
@@ -28,6 +30,8 @@ const navItems = [
   { label: "Experience",     href: "/dashboard/experience",       icon: Briefcase,       exact: false },
   { label: "Skills",         href: "/dashboard/skills",           icon: Wrench,          exact: false },
   { label: "Certifications", href: "/dashboard/certifications",   icon: Award,           exact: false },
+  { label: "Articles",       href: "/dashboard/articles",         icon: FileText,        exact: false },
+  { label: "Reviews",        href: "/dashboard/reviews",          icon: Star,            exact: false },
   { label: "Messages",       href: "/dashboard/messages",         icon: MessageSquare,   exact: false },
 ];
 

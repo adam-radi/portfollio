@@ -10,6 +10,7 @@ export const navigationLinks: NavItemExtended[] = [
   { id: "skills", label: "Skills", href: "/#skills" },
   { id: "experience", label: "Experience", href: "/#experience" },
   { id: "projects", label: "Projects", href: "/#projects" },
+  { id: "insights", label: "Insights", href: "/insights" },
   { id: "certifications", label: "Certifications", href: "/#certifications" },
   { id: "contact", label: "Contact", href: "/#contact" },
 ];

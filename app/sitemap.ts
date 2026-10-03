@@ -1,5 +1,5 @@
-import { MetadataRoute } from "next";
-import { getProjects } from "@/lib/db/data-fetchers";
+﻿import { MetadataRoute } from "next";
+import { getProjects, getPublishedArticles } from "@/lib/db/data-fetchers";
 import { SITE_CONFIG } from "@/lib/constants";
 
 function isRouteSlug(slug: string): boolean {
@@ -8,7 +8,10 @@ function isRouteSlug(slug: string): boolean {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = SITE_CONFIG.url;
-  const projects = await getProjects();
+  const [projects, articles] = await Promise.all([
+    getProjects(),
+    getPublishedArticles(),
+  ]);
 
   const routes: MetadataRoute.Sitemap = [
     {
@@ -19,6 +22,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: `${baseUrl}/projects`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/insights`,
       lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 0.9,
@@ -34,5 +43,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: project.featured ? 0.8 : 0.6,
     }));
 
-  return [...routes, ...projectRoutes];
+  const articleRoutes: MetadataRoute.Sitemap = articles
+    .filter((article) => isRouteSlug(article.slug))
+    .map((article) => ({
+      url: `${baseUrl}/insights/${article.slug}`,
+      lastModified: article.updatedAt,
+      changeFrequency: "monthly",
+      priority: 0.7,
+    }));
+
+  return [...routes, ...projectRoutes, ...articleRoutes];
 }

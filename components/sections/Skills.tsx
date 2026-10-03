@@ -6,9 +6,11 @@ import Container from "@/components/layout/Container";
 import SkillCard from "@/components/ui/SkillCard";
 import { Skill, SkillCategory } from "@/types/skill";
 import { skills as staticSkills } from "@/data/skills";
+import type { LikeCounts } from "@/types/like";
 
 interface SkillsProps {
   initialSkills?: Skill[];
+  likeCounts?: LikeCounts;
 }
 
 const categories: { id: SkillCategory; label: string; emoji: string }[] = [
@@ -42,7 +44,7 @@ const reducedVariants: Variants = {
   visible: { opacity: 1, transition: { duration: 0.3 } },
 };
 
-export default function Skills({ initialSkills = [] }: SkillsProps) {
+export default function Skills({ initialSkills = [], likeCounts = {} }: SkillsProps) {
   const shouldReduceMotion = useReducedMotion();
   const variants = shouldReduceMotion ? reducedVariants : itemVariants;
 
@@ -117,7 +119,7 @@ export default function Skills({ initialSkills = [] }: SkillsProps) {
                 <div className="grid grid-cols-2 gap-2.5">
                   {catSkills.map((skill) => (
                     <motion.div key={skill.id} variants={variants}>
-                      <SkillCard skill={skill} />
+                      <SkillCard skill={skill} likeCount={likeCounts[skill.id] ?? 0} />
                     </motion.div>
                   ))}
                 </div>

@@ -12,6 +12,8 @@ import { Experience } from "@/types/experience";
 import { Skill } from "@/types/skill";
 import { Certification } from "@/types/certification";
 import { Message } from "@/types/message";
+import { Article } from "@/types/article";
+import { Review } from "@/types/review";
 
 // ── Database Timeout Guard ──────────────────────────────────
 
@@ -295,5 +297,166 @@ export async function getMessages(): Promise<Message[]> {
     );
   } catch (error) {
     return [];
+  }
+}
+
+// ── Articles Fetchers ────────────────────────────────────────
+
+export async function getPublishedArticles(): Promise<Article[]> {
+  try {
+    if (!process.env.DATABASE_URL || !prisma?.article) return [];
+    const rows = await withDatabaseTimeout(
+      prisma.article.findMany({
+        where: { status: "PUBLISHED" },
+        orderBy: { publishedAt: "desc" },
+      })
+    );
+    return rows.map((a): Article => ({
+      ...a,
+      tags: asStringArray(a.tags),
+      coverImage: a.coverImage ?? null,
+      publishedAt: a.publishedAt ?? null,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
+  try {
+    if (!process.env.DATABASE_URL || !prisma?.article) return null;
+    const a = await withDatabaseTimeout(
+      prisma.article.findUnique({ where: { slug } })
+    );
+    if (!a || a.status !== "PUBLISHED") return null;
+    return {
+      ...a,
+      tags: asStringArray(a.tags),
+      coverImage: a.coverImage ?? null,
+      publishedAt: a.publishedAt ?? null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function getRelatedArticles(
+  articleId: string,
+  category: string,
+  tags: string[],
+  limit = 3
+): Promise<Article[]> {
+  try {
+    if (!process.env.DATABASE_URL || !prisma?.article) return [];
+
+    // Only ever consider PUBLISHED articles, then rank:
+    // 1) same category, 2) shared tags, 3) most recent.
+    const candidates = await withDatabaseTimeout(
+      prisma.article.findMany({
+        where: { status: "PUBLISHED", id: { not: articleId } },
+        orderBy: { publishedAt: "desc" },
+      })
+    );
+
+    const ranked = candidates
+      .map((a) => {
+        const candidateTags = asStringArray(a.tags);
+        const sharedTags = tags.filter((t) => candidateTags.includes(t)).length;
+        const score = (a.category === category ? 2 : 0) + Math.min(sharedTags, 2);
+        return { article: a, score };
+      })
+      .sort((x, y) => y.score - x.score)
+      .slice(0, limit)
+      .map(({ article }): Article => ({
+        ...article,
+        tags: asStringArray(article.tags),
+        coverImage: article.coverImage ?? null,
+        publishedAt: article.publishedAt ?? null,
+      }));
+
+    return ranked;
+  } catch {
+    return [];
+  }
+}
+
+export async function getArticleById(id: string): Promise<Article | null> {
+  try {
+    if (!process.env.DATABASE_URL || !prisma?.article) return null;
+    const a = await withDatabaseTimeout(
+      prisma.article.findUnique({ where: { id } })
+    );
+    if (!a) return null;
+    return {
+      ...a,
+      tags: asStringArray(a.tags),
+      coverImage: a.coverImage ?? null,
+      publishedAt: a.publishedAt ?? null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function getAllArticles(): Promise<Article[]> {
+  try {
+    if (!process.env.DATABASE_URL || !prisma?.article) return [];
+    const rows = await withDatabaseTimeout(
+      prisma.article.findMany({
+        orderBy: { createdAt: "desc" },
+      })
+    );
+    return rows.map((a): Article => ({
+      ...a,
+      tags: asStringArray(a.tags),
+      coverImage: a.coverImage ?? null,
+      publishedAt: a.publishedAt ?? null,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// ── Reviews Fetchers ────────────────────────────────────────
+
+// Public: only APPROVED reviews are ever returned. PENDING and REJECTED
+// reviews must never reach the public site.
+export async function getApprovedReviews(): Promise<Review[]> {
+  try {
+    if (!process.env.DATABASE_URL || !prisma?.review) return [];
+    return await withDatabaseTimeout(
+      prisma.review.findMany({
+        where: { status: "APPROVED" },
+        orderBy: { createdAt: "desc" },
+        take: 30,
+      })
+    );
+  } catch {
+    return [];
+  }
+}
+
+// Admin: all reviews regardless of status.
+export async function getAllReviews(): Promise<Review[]> {
+  try {
+    if (!process.env.DATABASE_URL || !prisma?.review) return [];
+    return await withDatabaseTimeout(
+      prisma.review.findMany({
+        orderBy: { createdAt: "desc" },
+      })
+    );
+  } catch {
+    return [];
+  }
+}
+
+export async function getReviewById(id: string): Promise<Review | null> {
+  try {
+    if (!process.env.DATABASE_URL || !prisma?.review) return null;
+    return await withDatabaseTimeout(
+      prisma.review.findUnique({ where: { id } })
+    );
+  } catch {
+    return null;
   }
 }

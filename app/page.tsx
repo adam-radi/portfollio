@@ -8,10 +8,13 @@ import Experience from "@/components/sections/Experience";
 import Certifications from "@/components/sections/Certifications";
 import Projects from "@/components/sections/Projects";
 import Faq from "@/components/sections/Faq";
+import Reviews from "@/components/sections/Reviews";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
 import JsonLd from "@/components/seo/JsonLd";
-import { getProjects, getExperiences, getSkills, getCertifications } from "@/lib/db/data-fetchers";
+import { getProjects, getExperiences, getSkills, getCertifications, getApprovedReviews } from "@/lib/db/data-fetchers";
+import { getLikeCounts } from "@/lib/db/likes";
+import type { PublicReview } from "@/types/review";
 import { SITE_CONFIG } from "@/lib/constants";
 import { buildPersonSchema, buildProfilePageSchema, buildFaqPageSchema } from "@/lib/seo/structured-data";
 
@@ -37,12 +40,35 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const [projects, experiences, skills, certifications] = await Promise.all([
+  const [projects, experiences, skills, certifications, reviews] = await Promise.all([
     getProjects(),
     getExperiences(),
     getSkills(),
     getCertifications(),
+    getApprovedReviews(),
   ]);
+
+  // Batched like counts — one grouped query per content type (no N+1).
+  const [projectLikes, skillLikes] = await Promise.all([
+    getLikeCounts(
+      "PROJECT",
+      projects.filter((p) => p.published !== false).map((p) => p.id)
+    ),
+    getLikeCounts("SKILL", skills.map((s) => s.id)),
+  ]);
+
+  // Strip internal fields (id, status, timestamps) before serializing to the client.
+  const publicReviews: PublicReview[] = reviews.map(
+    ({ name, role, company, content, rating, linkedinUrl, websiteUrl }) => ({
+      name,
+      role,
+      company,
+      content,
+      rating,
+      linkedinUrl,
+      websiteUrl,
+    })
+  );
 
   return (
     <PageWrapper>
@@ -53,11 +79,12 @@ export default async function Home() {
       <main>
         <Hero />
         <About />
-        <Skills initialSkills={skills} />
+        <Skills initialSkills={skills} likeCounts={skillLikes} />
         <Experience initialExperiences={experiences} />
-        <Projects initialProjects={projects} />
+        <Projects initialProjects={projects} likeCounts={projectLikes} />
         <Certifications initialCertifications={certifications} />
         <Faq />
+        <Reviews initialReviews={publicReviews} />
         <Contact />
       </main>
       <Footer />

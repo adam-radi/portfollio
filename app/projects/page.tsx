@@ -9,6 +9,7 @@ import Footer from "@/components/sections/Footer";
 import ProjectsExplorer from "@/components/sections/ProjectsExplorer";
 import JsonLd from "@/components/seo/JsonLd";
 import { getProjects } from "@/lib/db/data-fetchers";
+import { getLikeCounts } from "@/lib/db/likes";
 import { SITE_CONFIG } from "@/lib/constants";
 import {
   buildProjectsPageBreadcrumb,
@@ -57,6 +58,10 @@ export const metadata: Metadata = {
 export default async function ProjectsPage() {
   const allProjects = await getProjects();
   const publishedProjects = allProjects.filter((p) => p.published !== false);
+  const likeCounts = await getLikeCounts(
+    "PROJECT",
+    publishedProjects.map((p) => p.id)
+  );
 
   return (
     <PageWrapper>
@@ -146,7 +151,10 @@ export default async function ProjectsPage() {
             </div>
 
             {/* Interactive Projects Explorer */}
-            <ProjectsExplorer initialProjects={publishedProjects} />
+            <ProjectsExplorer
+              initialProjects={publishedProjects}
+              likeCounts={likeCounts}
+            />
           </div>
         </Container>
       </main>

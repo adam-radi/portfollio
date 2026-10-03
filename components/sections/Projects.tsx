@@ -7,6 +7,7 @@ import { motion, Variants, useReducedMotion } from "framer-motion";
 import Container from "@/components/layout/Container";
 import ProjectCard from "@/components/ui/ProjectCard";
 import { Project } from "@/types/project";
+import type { LikeCounts } from "@/types/like";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -32,9 +33,10 @@ const reducedVariants: Variants = {
 
 interface ProjectsProps {
   initialProjects?: Project[];
+  likeCounts?: LikeCounts;
 }
 
-export default function Projects({ initialProjects = [] }: ProjectsProps) {
+export default function Projects({ initialProjects = [], likeCounts = {} }: ProjectsProps) {
   const shouldReduceMotion = useReducedMotion();
   const variants = shouldReduceMotion ? reducedVariants : itemVariants;
 
@@ -96,7 +98,12 @@ export default function Projects({ initialProjects = [] }: ProjectsProps) {
                   variants={variants}
                   className={index === 0 ? "sm:col-span-2" : ""}
                 >
-                  <ProjectCard project={project} featured={index === 0} className="h-full" />
+                  <ProjectCard
+                    project={project}
+                    featured={index === 0}
+                    likeCount={likeCounts[project.id] ?? 0}
+                    className="h-full"
+                  />
                 </motion.div>
               ))}
             </motion.div>

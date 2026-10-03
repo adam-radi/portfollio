@@ -13,9 +13,11 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { GithubIcon } from "@/components/ui/icons";
+import LikeButton from "@/components/ui/LikeButton";
 import Container from "@/components/layout/Container";
 import JsonLd from "@/components/seo/JsonLd";
 import { getProjects, getProjectBySlug } from "@/lib/db/data-fetchers";
+import { getLikeCounts } from "@/lib/db/likes";
 import { SITE_CONFIG } from "@/lib/constants";
 import { buildProjectSchema, buildProjectBreadcrumb } from "@/lib/seo/structured-data";
 import Footer from "@/components/sections/Footer";
@@ -90,6 +92,8 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
     notFound();
   }
 
+  const likeCounts = await getLikeCounts("PROJECT", [project.id]);
+
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 pt-28 pb-20 relative overflow-hidden">
       <JsonLd data={buildProjectSchema(project)} />
@@ -123,6 +127,14 @@ export default async function ProjectDetailPage({ params }: ProjectPageProps) {
                   Featured
                 </span>
               )}
+              <LikeButton
+                entityType="PROJECT"
+                entityId={project.id}
+                count={likeCounts[project.id] ?? 0}
+                entityLabel={project.title}
+                size="md"
+                showLabel
+              />
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">

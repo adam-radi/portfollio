@@ -1,0 +1,8 @@
+▲ Next.js 16.3.0
+- Local:         http://localhost:3200
+- Network:       http://192.168.11.114:3200
+✓ Ready in 1371ms
+⚠ Warning: Next.js ignored package-lock.json in C:\Users\nn\OneDrive\Desktop\portfolio because it is outside the current Git repository (C:\Users\nn\OneDrive\Desktop\portfolio\portfolio).
+ To use this directory, set `outputFileTracingRoot` in your Next.js config.
+
+✓ Running next.config.ts took 875ms

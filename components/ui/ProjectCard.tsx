@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, GithubIcon, ExternalLink } from "@/components/ui/icons";
+import LikeButton from "@/components/ui/LikeButton";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import type { Project } from "@/types/project";
@@ -11,10 +12,16 @@ import type { Project } from "@/types/project";
 interface ProjectCardProps {
   project: Project;
   featured?: boolean;
+  likeCount?: number;
   className?: string;
 }
 
-export default function ProjectCard({ project, featured = false, className }: ProjectCardProps) {
+export default function ProjectCard({
+  project,
+  featured = false,
+  likeCount = 0,
+  className,
+}: ProjectCardProps) {
   return (
     <motion.article
       className={cn(
@@ -119,6 +126,14 @@ export default function ProjectCard({ project, featured = false, className }: Pr
               Live Demo
             </a>
           )}
+          <LikeButton
+            entityType="PROJECT"
+            entityId={project.id}
+            count={likeCount}
+            entityLabel={project.title}
+            size="sm"
+            className="ml-auto"
+          />
         </div>
       </div>
     </motion.article>

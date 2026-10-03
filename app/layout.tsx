@@ -93,6 +93,7 @@ export default function RootLayout({
       <body className={`${geist.variable} font-sans antialiased min-h-screen bg-background text-text`}>
         {/* Site-wide WebSite JSON-LD Structured Data */}
         <JsonLd data={buildWebsiteSchema()} />
+        <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
         {/* Remove extension-injected attributes before React hydrates */}
         <Script
           id="clean-extension-attrs"

@@ -93,3 +93,122 @@ html {
     padding: 0.875rem 1.25rem;
   }
 }
+
+/* ── Article content (Insights) ──────────────────────────────── */
+.article-content {
+  color: #a1a1aa;
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.article-content .article-p {
+  margin: 0 0 1.25rem;
+}
+
+.article-content .article-h2 {
+  margin: 2.25rem 0 1rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #fff;
+  scroll-margin-top: 6rem;
+}
+
+.article-content .article-h3 {
+  margin: 1.75rem 0 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #f4f4f5;
+  scroll-margin-top: 6rem;
+}
+
+.article-content .article-ul,
+.article-content .article-ol {
+  margin: 0 0 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.article-content .article-ul {
+  list-style: disc;
+}
+
+.article-content .article-ol {
+  list-style: decimal;
+}
+
+.article-content li {
+  margin-bottom: 0.5rem;
+}
+
+.article-content li::marker {
+  color: #ff6b2c;
+}
+
+.article-content .article-inline-code {
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgba(255, 107, 44, 0.2);
+  background: rgba(255, 107, 44, 0.1);
+  color: #ff8c4d;
+  font-size: 0.875em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.article-content .article-code-block {
+  position: relative;
+  margin: 0 0 1.25rem;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid #27272a;
+  background: #0b0b0d;
+}
+
+.article-content .article-code-block code {
+  color: #e4e4e7;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  white-space: pre;
+}
+
+.article-content .article-code-block::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #52525b;
+}
+
+.article-content .article-link {
+  color: #ff6b2c;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 0.2s ease;
+}
+
+.article-content .article-link:hover {
+  color: #ff8c4d;
+}
+
+.article-content .article-image {
+  display: block;
+  width: 100%;
+  margin: 1.5rem 0;
+  border-radius: 0.75rem;
+  border: 1px solid #27272a;
+}
+
+.article-content strong {
+  color: #f4f4f5;
+  font-weight: 700;
+}
+
+.article-content em {
+  font-style: italic;
+}

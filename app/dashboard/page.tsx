@@ -10,8 +10,10 @@ import {
   ArrowRight,
   Sparkles,
   TrendingUp,
+  Heart,
 } from "lucide-react";
 import { getProjects, getExperiences, getSkills, getCertifications } from "@/lib/db/data-fetchers";
+import { getLikeStats } from "@/lib/db/likes";
 import { prisma } from "@/lib/prisma";
 
 async function getUnreadMessagesCount(): Promise<number> {
@@ -24,13 +26,22 @@ async function getUnreadMessagesCount(): Promise<number> {
 }
 
 export default async function DashboardOverviewPage() {
-  const [projects, experiences, skills, certs, unreadMessages] = await Promise.all([
-    getProjects(),
-    getExperiences(),
-    getSkills(),
-    getCertifications(),
-    getUnreadMessagesCount(),
-  ]);
+  const [projects, experiences, skills, certs, unreadMessages, likeStats] =
+    await Promise.all([
+      getProjects(),
+      getExperiences(),
+      getSkills(),
+      getCertifications(),
+      getUnreadMessagesCount(),
+      getLikeStats(),
+    ]);
+
+  const likeBreakdown = [
+    { label: "Projects", value: likeStats.byType.PROJECT },
+    { label: "Skills", value: likeStats.byType.SKILL },
+    { label: "Articles", value: likeStats.byType.ARTICLE },
+    { label: "Reviews", value: likeStats.byType.REVIEW },
+  ];
 
   const stats = [
     {
@@ -196,6 +207,67 @@ export default async function DashboardOverviewPage() {
                 <span>View Live Site</span>
                 <Sparkles className="w-3 h-3" />
               </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Like Statistics */}
+        <div className="lg:col-span-12 p-6 rounded-3xl bg-[#111319] border border-zinc-800/80 space-y-6">
+          <div className="flex items-center justify-between border-b border-zinc-800/80 pb-4">
+            <h2 className="text-base font-bold text-white flex items-center gap-2">
+              <Heart className="w-4 h-4 text-[#FF6B2C]" />
+              Likes
+            </h2>
+            <span className="text-xs font-semibold text-[#FF6B2C]">
+              {likeStats.total} total
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {likeBreakdown.map((item) => (
+              <div
+                key={item.label}
+                className="flex items-center justify-between p-3.5 rounded-xl bg-zinc-950/60 border border-zinc-800/60"
+              >
+                <span className="text-xs text-zinc-400">{item.label}</span>
+                <span className="text-sm font-extrabold text-white tabular-nums">
+                  {item.value}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/60 space-y-1">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">
+                Most-liked Project
+              </span>
+              {likeStats.topProject ? (
+                <p className="text-sm font-bold text-white truncate">
+                  {likeStats.topProject.title}
+                  <span className="ml-2 text-xs font-semibold text-[#FF6B2C] tabular-nums">
+                    {likeStats.topProject.count}
+                  </span>
+                </p>
+              ) : (
+                <p className="text-xs text-zinc-500 italic">No likes yet</p>
+              )}
+            </div>
+
+            <div className="p-4 rounded-xl bg-zinc-950/60 border border-zinc-800/60 space-y-1">
+              <span className="text-[10px] uppercase font-bold tracking-wider text-zinc-500">
+                Most-liked Article
+              </span>
+              {likeStats.topArticle ? (
+                <p className="text-sm font-bold text-white truncate">
+                  {likeStats.topArticle.title}
+                  <span className="ml-2 text-xs font-semibold text-[#FF6B2C] tabular-nums">
+                    {likeStats.topArticle.count}
+                  </span>
+                </p>
+              ) : (
+                <p className="text-xs text-zinc-500 italic">No likes yet</p>
+              )}
             </div>
           </div>
         </div>

@@ -121,3 +121,80 @@ model Message {
 
   @@map("messages")
 }
+
+// ── Review (public testimonials — admin moderated) ────────────────────────────
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Review {
+  id          String       @id @default(cuid())
+  name        String       @db.VarChar(120)
+  role        String?      @db.VarChar(120)
+  company     String?      @db.VarChar(120)
+  content     String       @db.Text
+  rating      Int          // 1–5, validated in application layer
+  linkedinUrl String?      @db.VarChar(500)
+  websiteUrl  String?      @db.VarChar(500)
+  status      ReviewStatus @default(PENDING) // never auto-approved
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("reviews")
+}
+
+// ── Article (Insights / Blog) ─────────────────────────────────────────────────
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Article {
+  id          String        @id @default(cuid())
+  title       String        @db.VarChar(255)
+  slug        String        @unique @db.VarChar(255)
+  excerpt     String        @db.Text
+  content     String        @db.LongText
+  coverImage  String?       @db.VarChar(500)
+  category    String        @db.VarChar(100)
+  tags        Json          // string[]
+  status      ArticleStatus @default(DRAFT)
+  publishedAt DateTime?
+  authorName  String        @default("Adam Radi") @db.VarChar(255)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("articles")
+}
+
+
+// ── Like (anonymous visitor engagement — one like per visitor per entity) ────
+// entityType + entityId form a polymorphic reference to Project / Skill /
+// Article / Review. No relation columns are added to those models: likes are
+// an optional engagement signal, never part of the content contract.
+
+enum LikeEntityType {
+  PROJECT
+  SKILL
+  ARTICLE
+  REVIEW
+}
+
+model Like {
+  id         String         @id @default(cuid())
+  entityType LikeEntityType
+  entityId   String         @db.VarChar(128) // target Project/Skill/Article/Review id
+  visitorId  String         @db.VarChar(32)  // anonymous id from the httpOnly visitor cookie
+  createdAt  DateTime       @default(now())
+
+  // Uniqueness: a visitor can never create duplicate likes.
+  // The (entityType, entityId) index prefix also serves like-count queries.
+  @@unique([entityType, entityId, visitorId])
+  @@index([visitorId])
+
+  @@map("likes")
+}

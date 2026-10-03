@@ -2,10 +2,12 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
+import LikeButton from "@/components/ui/LikeButton";
 import type { Skill, SkillLevel } from "@/types/skill";
 
 interface SkillCardProps {
   skill: Skill;
+  likeCount?: number;
   className?: string;
 }
 
@@ -16,7 +18,7 @@ const levelConfig: Record<SkillLevel, { label: string; width: string; color: str
   expert:       { label: "Expert",       width: "w-full", color: "bg-gradient-to-r from-[#FF6B2C] to-amber-400" },
 };
 
-export default function SkillCard({ skill, className }: SkillCardProps) {
+export default function SkillCard({ skill, likeCount = 0, className }: SkillCardProps) {
   const level = skill.level ? levelConfig[skill.level] : levelConfig.intermediate;
 
   return (
@@ -56,7 +58,17 @@ export default function SkillCard({ skill, className }: SkillCardProps) {
                 )}
               />
             </div>
-            <p className="text-[10px] text-zinc-500 mt-1 font-medium">{level.label}</p>
+            <div className="mt-1.5 flex items-center justify-between gap-2">
+              <p className="text-[10px] text-zinc-500 font-medium truncate">{level.label}</p>
+              <LikeButton
+                entityType="SKILL"
+                entityId={skill.id}
+                count={likeCount}
+                entityLabel={skill.name}
+                size="sm"
+                className="shrink-0"
+              />
+            </div>
           </div>
         )}
       </div>

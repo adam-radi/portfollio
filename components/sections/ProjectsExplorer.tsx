@@ -5,12 +5,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, Sparkles, Filter } from "lucide-react";
 import ProjectCard from "@/components/ui/ProjectCard";
 import type { Project } from "@/types/project";
+import type { LikeCounts } from "@/types/like";
 
 interface ProjectsExplorerProps {
   initialProjects: Project[];
+  likeCounts?: LikeCounts;
 }
 
-export default function ProjectsExplorer({ initialProjects }: ProjectsExplorerProps) {
+export default function ProjectsExplorer({
+  initialProjects,
+  likeCounts = {},
+}: ProjectsExplorerProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTech, setSelectedTech] = useState<string>("All");
 
@@ -123,7 +128,12 @@ export default function ProjectsExplorer({ initialProjects }: ProjectsExplorerPr
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.35, delay: index * 0.05 }}
               >
-                <ProjectCard project={project} featured={index === 0 && selectedTech === "All" && !searchQuery} className="h-full" />
+                <ProjectCard
+                  project={project}
+                  featured={index === 0 && selectedTech === "All" && !searchQuery}
+                  likeCount={likeCounts[project.id] ?? 0}
+                  className="h-full"
+                />
               </motion.div>
             ))}
           </motion.div>

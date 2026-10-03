@@ -253,3 +253,134 @@ export function buildProjectBreadcrumb(projectTitle: string, slug: string): Json
     ],
   };
 }
+
+/**
+ * BreadcrumbList schema for the /insights archive page.
+ */
+export function buildInsightsPageBreadcrumb(): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_CONFIG.url,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Insights",
+        item: `${SITE_CONFIG.url}/insights`,
+      },
+    ],
+  };
+}
+
+/**
+ * CollectionPage schema for the /insights archive page.
+ */
+export function buildInsightsCollectionSchema(
+  articles: Array<{ title: string; slug: string; excerpt: string }>
+): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${SITE_CONFIG.url}/insights/#collection`,
+    name: "Insights | Adam Radi",
+    description:
+      "Technical articles and insights on web development, Next.js, Laravel, and building software in Morocco.",
+    url: `${SITE_CONFIG.url}/insights`,
+    isPartOf: { "@id": `${SITE_CONFIG.url}/#website` },
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: articles.map((a, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: a.title,
+        url: `${SITE_CONFIG.url}/insights/${a.slug}`,
+        description: a.excerpt,
+      })),
+    },
+  };
+}
+
+/**
+ * BreadcrumbList schema for an article detail page.
+ */
+export function buildArticleBreadcrumb(articleTitle: string, slug: string): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_CONFIG.url,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Insights",
+        item: `${SITE_CONFIG.url}/insights`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: articleTitle,
+        item: `${SITE_CONFIG.url}/insights/${slug}`,
+      },
+    ],
+  };
+}
+
+/**
+ * BlogPosting JSON-LD for a published article page.
+ */
+export function buildArticleSchema(article: {
+  title: string;
+  slug: string;
+  excerpt: string;
+  coverImage: string | null;
+  publishedAt: Date | null;
+  updatedAt: Date;
+  authorName: string;
+}): JsonLdObject {
+  const url = `${SITE_CONFIG.url}/insights/${article.slug}`;
+  const schema: JsonLdObject = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: article.title,
+    description: article.excerpt,
+    url,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+    datePublished: article.publishedAt
+      ? article.publishedAt.toISOString()
+      : article.updatedAt.toISOString(),
+    dateModified: article.updatedAt.toISOString(),
+    author: {
+      "@type": "Person",
+      "@id": `${SITE_CONFIG.url}/#person`,
+      name: article.authorName || SITE_CONFIG.name,
+      url: SITE_CONFIG.url,
+    },
+    publisher: {
+      "@type": "Person",
+      "@id": `${SITE_CONFIG.url}/#person`,
+      name: SITE_CONFIG.name,
+      url: SITE_CONFIG.url,
+    },
+    isPartOf: { "@id": `${SITE_CONFIG.url}/#website` },
+  };
+
+  if (article.coverImage) {
+    schema.image = absUrl(article.coverImage);
+  }
+
+  return schema;
+}
