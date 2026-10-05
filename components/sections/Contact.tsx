@@ -45,7 +45,7 @@ export default function Contact() {
   const shouldReduceMotion = useReducedMotion();
   const variants = shouldReduceMotion ? reducedVariants : itemVariants;
   const email = "radi.adam.2006@gmail.com";
-  const whatsappNumber = "212702881862";
+  const whatsappNumber = "212703242650";
   const whatsappLink = `https://wa.me/${whatsappNumber}`;
 
   const handleCopy = () => {

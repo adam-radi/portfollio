@@ -1,4 +1,4 @@
-import { GithubIcon, LinkedinIcon, MailIcon } from "@/components/ui/icons";
+import { GithubIcon, LinkedinIcon, MailIcon, InstagramIcon, MessageCircle } from "@/components/ui/icons";
 import { SocialLink } from "@/types/social";
 
 export const socials: SocialLink[] = [
@@ -15,6 +15,20 @@ export const socials: SocialLink[] = [
     href: "https://linkedin.com/in/adamradi-",
     icon: LinkedinIcon,
     hoverColor: "hover:text-blue-400 hover:border-blue-500/50 hover:bg-blue-500/10",
+  },
+  {
+    id: 4,
+    label: "WhatsApp",
+    href: "https://wa.me/212703242650",
+    icon: MessageCircle,
+    hoverColor: "hover:text-[#25D366] hover:border-[#25D366]/50 hover:bg-[#25D366]/10",
+  },
+  {
+    id: 5,
+    label: "Instagram",
+    href: "https://instagram.com/radi_code1",
+    icon: InstagramIcon,
+    hoverColor: "hover:text-pink-400 hover:border-pink-500/50 hover:bg-pink-500/10",
   },
   {
     id: 3,
