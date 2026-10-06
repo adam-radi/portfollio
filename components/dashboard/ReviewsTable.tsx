@@ -11,7 +11,12 @@ import {
   Trash2,
   Eye,
 } from "lucide-react";
-import { Review, ReviewStatus } from "@/types/review";
+import {
+  Review,
+  ReviewStatus,
+  REVIEW_SOURCE_LABELS,
+  REVIEW_SOURCE_UNKNOWN_LABEL,
+} from "@/types/review";
 import { setReviewStatusAction, deleteReviewAction } from "@/actions/reviews";
 
 interface ReviewsTableProps {
@@ -154,6 +159,16 @@ export function ReviewsTable({ initialReviews }: ReviewsTableProps) {
                         }`}
                       >
                         {STATUS_LABELS[review.status]}
+                      </span>
+                      <span
+                        title="How they found you"
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border bg-zinc-900/80 border-zinc-700/60 ${
+                          review.source ? "text-zinc-300" : "text-zinc-500 italic"
+                        }`}
+                      >
+                        {review.source
+                          ? REVIEW_SOURCE_LABELS[review.source]
+                          : REVIEW_SOURCE_UNKNOWN_LABEL}
                       </span>
                     </div>
 

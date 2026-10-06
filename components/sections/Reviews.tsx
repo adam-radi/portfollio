@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import Container from "@/components/layout/Container";
 import { LinkedinIcon } from "@/components/ui/icons";
-import { PublicReview } from "@/types/review";
+import { PublicReview, REVIEW_SOURCE_OPTIONS } from "@/types/review";
 import {
   validateReview,
   ReviewErrors,
@@ -86,6 +86,7 @@ export default function Reviews({ initialReviews = [] }: ReviewsProps) {
     rating: 0,
     linkedinUrl: "",
     websiteUrl: "",
+    source: "",
     honeypot: "",
   });
 
@@ -93,7 +94,9 @@ export default function Reviews({ initialReviews = [] }: ReviewsProps) {
   const variants = shouldReduceMotion ? reducedVariants : itemVariants;
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -135,6 +138,7 @@ export default function Reviews({ initialReviews = [] }: ReviewsProps) {
         rating: 0,
         linkedinUrl: "",
         websiteUrl: "",
+        source: "",
         honeypot: "",
       });
     } catch (err) {
@@ -477,6 +481,34 @@ export default function Reviews({ initialReviews = [] }: ReviewsProps) {
                     <p className="text-xs text-rose-400">{fieldErrors.websiteUrl}</p>
                   )}
                 </div>
+              </div>
+
+              {/* How did you find me? — acquisition source */}
+              <div className="space-y-1.5">
+                <label htmlFor="review-source" className="text-xs font-medium text-zinc-300">
+                  How did you find me? <span className="text-[#FF6B2C]">*</span>
+                </label>
+                <select
+                  id="review-source"
+                  name="source"
+                  required
+                  value={formData.source}
+                  onChange={handleChange}
+                  aria-invalid={!!fieldErrors.source}
+                  className={`${inputClass} [&_option]:bg-zinc-950 [&_option]:text-zinc-100`}
+                >
+                  <option value="" disabled>
+                    Select an option...
+                  </option>
+                  {REVIEW_SOURCE_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                {fieldErrors.source && (
+                  <p className="text-xs text-rose-400">{fieldErrors.source}</p>
+                )}
               </div>
 
               {/* Status Feedback Banners */}

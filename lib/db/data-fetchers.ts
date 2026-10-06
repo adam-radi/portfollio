@@ -13,7 +13,12 @@ import { Skill } from "@/types/skill";
 import { Certification } from "@/types/certification";
 import { Message } from "@/types/message";
 import { Article } from "@/types/article";
-import { Review } from "@/types/review";
+import {
+  Review,
+  ReviewSource,
+  REVIEW_SOURCES,
+  REVIEW_SOURCE_LABELS,
+} from "@/types/review";
 
 // ── Database Timeout Guard ──────────────────────────────────
 
@@ -458,5 +463,120 @@ export async function getReviewById(id: string): Promise<Review | null> {
     );
   } catch {
     return null;
+  }
+}
+
+// ── Review Statistics (dashboard) ────────────────────────────
+//
+// Moderation rules stay in charge: the headline acquisition breakdown counts
+// APPROVED reviews only (that is what the public site actually shows), while
+// a second breakdown reports every submission regardless of status.
+// Rows stored before the source field existed have a NULL source and are
+// reported as "Not specified" — their source is never invented.
+
+export interface ReviewSourceStat {
+  source: ReviewSource;
+  label: string;
+  count: number;
+  percentage: number;
+}
+
+export interface ReviewDashboardStats {
+  total: number;
+  pending: number;
+  approved: number;
+  rejected: number;
+  /** Percentage denominator: all approved reviews (NULL source included). */
+  approvedBySource: ReviewSourceStat[];
+  approvedUnspecified: number;
+  /** Percentage denominator: every submitted review, any status. */
+  submittedBySource: ReviewSourceStat[];
+  submittedUnspecified: number;
+}
+
+function emptyReviewStats(): ReviewDashboardStats {
+  return {
+    total: 0,
+    pending: 0,
+    approved: 0,
+    rejected: 0,
+    approvedBySource: REVIEW_SOURCES.map((source) => ({
+      source,
+      label: REVIEW_SOURCE_LABELS[source],
+      count: 0,
+      percentage: 0,
+    })),
+    approvedUnspecified: 0,
+    submittedBySource: REVIEW_SOURCES.map((source) => ({
+      source,
+      label: REVIEW_SOURCE_LABELS[source],
+      count: 0,
+      percentage: 0,
+    })),
+    submittedUnspecified: 0,
+  };
+}
+
+/** Percentage of `count` in `total`. Never divides by zero. */
+function percentageOf(count: number, total: number): number {
+  if (total <= 0 || count <= 0) return 0;
+  return Math.round((count / total) * 100);
+}
+
+function buildBreakdown(
+  counts: Partial<Record<ReviewSource, number>>,
+  total: number
+): ReviewSourceStat[] {
+  return REVIEW_SOURCES.map((source) => ({
+    source,
+    label: REVIEW_SOURCE_LABELS[source],
+    count: counts[source] || 0,
+    percentage: percentageOf(counts[source] || 0, total),
+  }));
+}
+
+export async function getReviewStats(): Promise<ReviewDashboardStats> {
+  try {
+    if (!process.env.DATABASE_URL || !prisma?.review) return emptyReviewStats();
+
+    // One grouped query per scope — status × source, aggregated in JS.
+    const rows = await withDatabaseTimeout(
+      prisma.review.groupBy({
+        by: ["status", "source"],
+        _count: { _all: true },
+      })
+    );
+
+    const stats = emptyReviewStats();
+    const approvedCounts: Partial<Record<ReviewSource, number>> = {};
+    const submittedCounts: Partial<Record<ReviewSource, number>> = {};
+    let unspecified = 0; // rows with no recorded source, any status
+
+    for (const row of rows) {
+      const count = row._count._all;
+      stats.total += count;
+
+      if (row.status === "APPROVED") stats.approved += count;
+      else if (row.status === "PENDING") stats.pending += count;
+      else if (row.status === "REJECTED") stats.rejected += count;
+
+      if (row.source) {
+        submittedCounts[row.source] = (submittedCounts[row.source] || 0) + count;
+        if (row.status === "APPROVED") {
+          approvedCounts[row.source] = (approvedCounts[row.source] || 0) + count;
+        }
+      } else {
+        unspecified += count;
+        if (row.status === "APPROVED") stats.approvedUnspecified += count;
+      }
+    }
+
+    stats.submittedUnspecified = unspecified;
+    stats.approvedBySource = buildBreakdown(approvedCounts, stats.approved);
+    stats.submittedBySource = buildBreakdown(submittedCounts, stats.total);
+
+    return stats;
+  } catch {
+    return emptyReviewStats();
   }
 }

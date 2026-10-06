@@ -67,6 +67,7 @@ export async function POST(request: Request) {
         rating: data.rating,
         linkedinUrl: data.linkedinUrl,
         websiteUrl: data.websiteUrl,
+        source: data.source,
         status: "PENDING",
       },
     });

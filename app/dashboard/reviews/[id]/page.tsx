@@ -1,10 +1,14 @@
 import React from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Star, Calendar, Globe, User, Building2 } from "lucide-react";
+import { ArrowLeft, Star, Calendar, Globe, User, Building2, Search } from "lucide-react";
 import { LinkedinIcon } from "@/components/ui/icons";
 import { getReviewById } from "@/lib/db/data-fetchers";
 import ReviewModerationActions from "@/components/dashboard/ReviewModerationActions";
+import {
+  REVIEW_SOURCE_LABELS,
+  REVIEW_SOURCE_UNKNOWN_LABEL,
+} from "@/types/review";
 
 interface ReviewDetailPageProps {
   params: Promise<{ id: string }>;
@@ -76,6 +80,18 @@ export default async function ReviewDetailPage({ params }: ReviewDetailPageProps
                   {review.company}
                 </span>
               )}
+              <span
+                title="How did you find me?"
+                className="flex items-center gap-1.5 text-zinc-200 font-semibold"
+              >
+                <Search className="w-3.5 h-3.5 text-[#FF6B2C]" />
+                {review.source
+                  ? REVIEW_SOURCE_LABELS[review.source]
+                  : REVIEW_SOURCE_UNKNOWN_LABEL}
+                <span className="text-zinc-500 font-normal">
+                  · how they found you
+                </span>
+              </span>
             </div>
 
             <div className="flex items-center gap-1">

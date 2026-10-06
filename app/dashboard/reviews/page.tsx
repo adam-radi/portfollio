@@ -1,9 +1,13 @@
 import React from "react";
 import ReviewsTable from "@/components/dashboard/ReviewsTable";
-import { getAllReviews } from "@/lib/db/data-fetchers";
+import ReviewSourceStats from "@/components/dashboard/ReviewSourceStats";
+import { getAllReviews, getReviewStats } from "@/lib/db/data-fetchers";
 
 export default async function DashboardReviewsPage() {
-  const reviews = await getAllReviews();
+  const [reviews, stats] = await Promise.all([
+    getAllReviews(),
+    getReviewStats(),
+  ]);
 
   return (
     <div className="space-y-8">
@@ -20,6 +24,9 @@ export default async function DashboardReviewsPage() {
           on the homepage.
         </p>
       </div>
+
+      {/* Acquisition-source statistics */}
+      <ReviewSourceStats stats={stats} />
 
       <ReviewsTable initialReviews={reviews} />
     </div>

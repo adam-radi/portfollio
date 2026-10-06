@@ -130,19 +130,38 @@ enum ReviewStatus {
   REJECTED
 }
 
-model Review {
-  id          String       @id @default(cuid())
-  name        String       @db.VarChar(120)
-  role        String?      @db.VarChar(120)
-  company     String?      @db.VarChar(120)
-  content     String       @db.Text
-  rating      Int          // 1–5, validated in application layer
-  linkedinUrl String?      @db.VarChar(500)
-  websiteUrl  String?      @db.VarChar(500)
-  status      ReviewStatus @default(PENDING) // never auto-approved
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+// Acquisition source — how the visitor found the portfolio ("How did you find
+// me?"). Internal analytics only: never rendered on the public site.
+// Nullable so rows written before this field existed keep working; those rows
+// stay NULL and are reported as "Not specified" instead of guessing history.
+// Adding a source later only requires: enum value + entry in types/review.ts.
+enum ReviewSource {
+  GOOGLE_SEARCH
+  LINKEDIN
+  INSTAGRAM
+  FACEBOOK
+  GITHUB
+  YOUTUBE
+  TIKTOK
+  REFERRAL
+  OTHER
+}
 
+model Review {
+  id          String        @id @default(cuid())
+  name        String        @db.VarChar(120)
+  role        String?       @db.VarChar(120)
+  company     String?       @db.VarChar(120)
+  content     String        @db.Text
+  rating      Int           // 1–5, validated in application layer
+  linkedinUrl String?       @db.VarChar(500)
+  websiteUrl  String?       @db.VarChar(500)
+  source      ReviewSource? // required by validation on submit; NULL = legacy row
+  status      ReviewStatus  @default(PENDING) // never auto-approved
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([status])
   @@map("reviews")
 }
 
