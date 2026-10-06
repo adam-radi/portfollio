@@ -33,7 +33,7 @@ export const socials: SocialLink[] = [
   {
     id: 3,
     label: "Email",
-    href: "mailto:radi.adam.2006@gmail.com",
+    href: "https://mail.google.com/mail/?view=cm&fs=1&to=radi.adam.2006@gmail.com",
     icon: MailIcon,
     hoverColor: "hover:text-indigo-400 hover:border-indigo-500/50 hover:bg-indigo-500/10",
   },
